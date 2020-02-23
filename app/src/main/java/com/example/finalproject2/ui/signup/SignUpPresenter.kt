@@ -1,4 +1,4 @@
-package com.example.finalproject.ui.register
+package com.example.finalproject2.ui.signup
 
 import android.app.Activity
 import android.content.Context

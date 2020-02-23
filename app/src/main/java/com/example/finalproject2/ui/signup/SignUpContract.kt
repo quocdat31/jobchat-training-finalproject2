@@ -1,4 +1,4 @@
-package com.example.finalproject.ui.register
+package com.example.finalproject2.ui.signup
 
 import android.content.Context
 import com.example.finalproject2.base.BasePresenter
