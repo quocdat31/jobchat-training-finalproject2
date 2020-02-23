@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:clickable="true"
+    android:focusable="true"
+    android:id="@+id/friendItemRootLayout"
+    android:layout_height="wrap_content"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="?android:attr/selectableItemBackground"
+    android:padding="@dimen/baseMargin"
+    tools:targetApi="o">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="?android:attr/actionBarSize">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:layout_gravity="center"
+            android:id="@+id/friendAvatarImageView"
+            android:layout_width="@dimen/contactImageViewDimension"
+            android:layout_height="@dimen/contactImageViewDimension"
+            android:background="@drawable/circle_shape"
+            android:padding="@dimen/baseMargin"
+            android:src="@drawable/ic_person_black_24dp"
+            android:tint="@color/colorWhite" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:paddingHorizontal="@dimen/baseMargin"
+            tools:targetApi="o">
+
+            <TextView
+                style="@style/TextAppearance.MaterialComponents.Body1"
+                android:id="@+id/friendNameTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/sampleName" />
+
+            <TextView
+                style="@style/TextAppearance.MaterialComponents.Body2"
+                android:id="@+id/friendStatusTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/sampleEmail" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+</LinearLayout>
+
