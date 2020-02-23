@@ -1,5 +1,7 @@
 package com.example.finalproject2.ui.signin
 
+import android.content.Context
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
@@ -10,6 +12,12 @@ import kotlinx.android.synthetic.main.activity_signin.*
 import javax.inject.Inject
 
 class SignInActivity : AppCompatActivity(), SignInContract.View {
+
+    companion object {
+        fun getInstance(context: Context): Intent {
+            return Intent(context, SignInActivity::class.java)
+        }
+    }
 
     @Inject
     lateinit var mPresenter: SignInPresenter
