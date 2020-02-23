@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical"
+    tools:context=".ui.register.RegisterActivity">
+
+    <ImageView
+        android:background="@color/colorLightGray"
+        android:id="@+id/registerAvatarImageView"
+        android:scaleType="centerCrop"
+        android:layout_margin="@dimen/baseMargin"
+        android:layout_width="@dimen/registerImagePreviewDimension"
+        android:layout_height="@dimen/registerImagePreviewDimension"/>
+
+    <com.google.android.material.textfield.TextInputLayout
+
+        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense"
+        android:layout_width="@dimen/textInputLayoutWidth"
+        android:layout_height="@dimen/textInputLayoutHeight"
+        android:layout_marginVertical="@dimen/baseMargin"
+        android:hint="@string/emailInputHInt"
+        app:helperText="@string/emailInputHelper"
+        tools:targetApi="o">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/registerEmailEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textEmailAddress" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense"
+        android:layout_width="@dimen/textInputLayoutWidth"
+        android:layout_height="@dimen/textInputLayoutHeight"
+        android:layout_marginVertical="@dimen/baseMargin"
+        android:hint="@string/passwordInputHint"
+        app:helperText="@string/passwordInputHelper"
+        app:passwordToggleEnabled="true">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/registerPasswordEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense"
+        android:layout_width="@dimen/textInputLayoutWidth"
+        android:layout_height="@dimen/textInputLayoutHeight"
+        android:layout_marginVertical="@dimen/baseMargin"
+        android:hint="@string/confirmPasswordInputHint"
+        app:helperText="@string/confirmPasswordInputHelper"
+        app:passwordToggleEnabled="true">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/registerConfirmPasswordEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense"
+        android:layout_width="@dimen/textInputLayoutWidth"
+        android:layout_height="@dimen/textInputLayoutHeight"
+        android:layout_marginVertical="@dimen/baseMargin"
+        android:hint="@string/usernameInputHint"
+        app:helperText="@string/usernameInputHelper">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/registerUsernameEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <ProgressBar
+        android:id="@+id/registerProgressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
+
+    <Button
+        android:id="@+id/submitRegisterButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/signUp" />
+
+
+</LinearLayout>

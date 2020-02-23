@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="baseMargin">8dp</dimen>
+    <dimen name="halfBaseMargin">4dp</dimen>
+    <dimen name="registerImagePreviewDimension">148dp</dimen>
+    <dimen name="contactImageViewDimension">48dp</dimen>
+
+    <dimen name="textInputLayoutHeight">56dp</dimen>
+    <dimen name="textInputLayoutWidth">280dp</dimen>
+
+</resources>
