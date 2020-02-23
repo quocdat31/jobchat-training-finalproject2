@@ -5,7 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import com.example.finalproject.mainPresenter
+import com.example.finalproject2.mainPresenter
 import com.example.finalproject2.ui.main.main_tab_fragment.chat.ChatFragment
 import com.example.finalproject2.ui.main.main_tab_fragment.contact.ContactFragment
 import com.example.finalproject.ui.home.main_tab_fragment.home.HomeFragment

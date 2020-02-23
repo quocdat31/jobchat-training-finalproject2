@@ -1,10 +1,10 @@
-package com.example.finalproject
+package com.example.finalproject2
 
 fun component() = App.appComponent
 
-fun signUpPresenter() = component().registerPresenter()
+fun signUpPresenter() = component().signUpPresenter()
 
-fun signInPresenter() = component().loginPresenter()
+fun signInPresenter() = component().signInPresenter()
 
 fun mainPresenter() = component().mainPresenter()
 

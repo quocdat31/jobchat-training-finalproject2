@@ -13,7 +13,7 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.example.finalproject.signUpPresenter
+import com.example.finalproject2.signUpPresenter
 import com.example.finalproject.ui.register.SignUpNavigator
 import com.example.finalproject2.R
 import com.example.finalproject2.ultis.onTextChanged

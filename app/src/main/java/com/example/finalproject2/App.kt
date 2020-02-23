@@ -1,8 +1,7 @@
-package com.example.finalproject
+package com.example.finalproject2
 
 import android.app.Application
 import com.example.finalproject2.di.AppComponent
-import com.example.finalproject.di.DaggerAppComponent
 
 class App : Application() {
 
