@@ -8,12 +8,10 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
-import android.view.View
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.example.finalproject2.signUpPresenter
 import com.example.finalproject2.R
 import com.example.finalproject2.ultis.gone
 import com.example.finalproject2.ultis.onTextChanged
@@ -30,7 +28,7 @@ class SignUpActivity : AppCompatActivity(), SignUpContract.View {
         }
     }
 
-    private val mPresenter by lazy { signUpPresenter() }
+    private val mPresenter by lazy { SignUpPresenter() }
     private lateinit var mNavigator: SignUpNavigator
     private val REQUEST_CODE = 1
     private val TITLE = "Select image"

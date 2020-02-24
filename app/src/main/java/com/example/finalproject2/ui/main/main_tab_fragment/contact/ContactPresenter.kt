@@ -1,24 +1,17 @@
 package com.example.finalproject2.ui.main.main_tab_fragment.contact
 
-
-import com.example.finalproject2.firebase.authentication.FirebaseAuthInterface
-import com.example.finalproject2.firebase.database.FirebaseDatabaseInterface
-import com.example.finalproject2.model.Friend
-import io.reactivex.CompletableObserver
-import io.reactivex.Observer
+import com.example.finalproject2.firebase.authentication.FirebaseAuthImpl
+import com.example.finalproject2.firebase.database.FirebaseDatabaseImp
+import com.example.finalproject2.model.User
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 
-class ContactPresenter constructor(
-    private val firebaseDatabaseInterface: FirebaseDatabaseInterface,
-    private val firebaseAuthInterface: FirebaseAuthInterface
-) :
+class ContactPresenter :
     ContactContract.Presenter {
 
     private lateinit var mView: ContactContract.View
-    private var mFriend = Friend()
+    private var mFriend = User()
     private var mCompositeDisposable = CompositeDisposable()
 
     override fun onStart() = Unit
@@ -27,8 +20,7 @@ class ContactPresenter constructor(
 
     override fun addFriend() {
         val disposable =
-            firebaseDatabaseInterface.addFriend(
-                firebaseAuthInterface.getUserId(),
+            FirebaseDatabaseImp.addFriend(
                 mFriend.email.toString()
             ).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
@@ -43,15 +35,15 @@ class ContactPresenter constructor(
         mFriend.email = email
     }
 
-    override fun getCurrentUserEmail(): String = firebaseAuthInterface.getUserEmail()
+    override fun getCurrentUserEmail(): String = FirebaseAuthImpl.getUserEmail()
 
-    override fun getCurrentUserId(): String = firebaseAuthInterface.getUserId()
+    override fun getCurrentUserId(): String = FirebaseAuthImpl.getUserId()
 
     override fun getContactList(id: String) {
         val disposable =
-            firebaseDatabaseInterface.getFriendList(getCurrentUserId()).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread()).subscribe({ t: List<Friend>? ->
-                    mView.onGetContactSuccess(t as ArrayList<Friend>)
+            FirebaseDatabaseImp.getFriendList().subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread()).subscribe({ t: List<User>? ->
+                    mView.onGetContactSuccess(t as ArrayList<User>)
                 }, { t: Throwable? ->
                     mView.onAddFriendError(t?.message.toString())
                 })

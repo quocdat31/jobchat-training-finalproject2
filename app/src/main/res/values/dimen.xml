@@ -3,6 +3,8 @@
 
     <dimen name="baseMargin">8dp</dimen>
     <dimen name="halfBaseMargin">4dp</dimen>
+    <dimen name="baseMargin2">16dp</dimen>
+    <dimen name="baseMargin3">32dp</dimen>
     <dimen name="registerImagePreviewDimension">148dp</dimen>
     <dimen name="contactImageViewDimension">48dp</dimen>
 

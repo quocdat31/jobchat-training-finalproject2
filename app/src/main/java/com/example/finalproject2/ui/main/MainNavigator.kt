@@ -1,7 +1,6 @@
 package com.example.finalproject2.ui.main
 
 import android.content.Context
-import androidx.appcompat.app.AppCompatActivity
 import com.example.finalproject2.base.BaseNavigator
 import com.example.finalproject2.ui.signin.SignInActivity
 

@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.example.finalproject2.personalPresenter
 import com.example.finalproject2.R
 import com.example.finalproject2.ui.main.MainNavigator
 import com.google.firebase.auth.FirebaseAuth
@@ -14,7 +13,7 @@ import kotlinx.android.synthetic.main.fragment_personal.*
 
 class PersonalFragment : Fragment() {
 
-    private val mPresenter by lazy { personalPresenter() }
+    private val mPresenter by lazy { PersonalPresenter() }
     lateinit var mNavigator: MainNavigator
     lateinit var mContext: Context
 

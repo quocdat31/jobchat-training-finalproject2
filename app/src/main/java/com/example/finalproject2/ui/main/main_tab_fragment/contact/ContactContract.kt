@@ -2,14 +2,14 @@ package com.example.finalproject2.ui.main.main_tab_fragment.contact
 
 import com.example.finalproject2.base.BasePresenter
 import com.example.finalproject2.base.BaseView
-import com.example.finalproject2.model.Friend
+import com.example.finalproject2.model.User
 
 interface ContactContract {
     interface View : BaseView {
         fun onAddFriendButtonClick()
         fun onAddFriendSuccess()
         fun onAddFriendError(exception: String?)
-        fun onGetContactSuccess(friendList: ArrayList<Friend>)
+        fun onGetContactSuccess(friendList: ArrayList<User>)
         fun onGetContactError(error: String)
     }
     interface Presenter : BasePresenter<View> {
@@ -18,5 +18,8 @@ interface ContactContract {
         fun getCurrentUserEmail(): String
         fun getCurrentUserId(): String
         fun getContactList(id: String)
+    }
+    interface Navigator {
+        fun navigateChatActivity()
     }
 }

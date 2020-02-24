@@ -3,6 +3,7 @@ package com.example.finalproject2.ultis
 import android.text.Editable
 import android.text.TextWatcher
 import android.widget.EditText
+import com.google.android.material.textfield.TextInputLayout
 
 inline fun EditText.onTextChanged(crossinline onTextChangeHandler: (String) -> Unit) {
     addTextChangedListener(object : TextWatcher {
@@ -12,4 +13,12 @@ inline fun EditText.onTextChanged(crossinline onTextChangeHandler: (String) -> U
             onTextChangeHandler(input?.toString() ?: "")
         }
     })
+}
+
+fun TextInputLayout.clear() {
+    this.editText?.text?.clear()
+}
+
+fun TextInputLayout.getString(): String {
+    return this.editText?.text.toString()
 }

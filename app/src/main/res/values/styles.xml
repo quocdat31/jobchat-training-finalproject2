@@ -7,8 +7,11 @@
             <item name="colorAccent">@color/colorAccent</item>
         </style>
 
-    <style name="ToolbarColoredBackArrow" parent="AppTheme">
+    <style name="MyTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="android:textColorSecondary">@color/colorWhite</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
     </style>
 
 </resources>

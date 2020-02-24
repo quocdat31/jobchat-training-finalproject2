@@ -5,21 +5,19 @@ import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.UserProfileChangeRequest
 import io.reactivex.Completable
-import io.reactivex.Observable
-import javax.inject.Inject
 
-class FirebaseAuthImpl @Inject constructor(val firebaseAuth: FirebaseAuth): FirebaseAuthInterface {
-
+object FirebaseAuthImpl : FirebaseAuthInterface {
+    private val mFirebaseAuth = FirebaseAuth.getInstance()
     override fun signUp(
         email: String,
         password: String,
         username: String
     ): Completable {
         return Completable.create { emitter ->
-            firebaseAuth.createUserWithEmailAndPassword(email, password)
+            mFirebaseAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener { task: Task<AuthResult> ->
                     if (task.isComplete && task.isSuccessful) {
-                        firebaseAuth.currentUser?.updateProfile(
+                        mFirebaseAuth.currentUser?.updateProfile(
                             UserProfileChangeRequest
                                 .Builder()
                                 .setDisplayName(username)
@@ -34,20 +32,22 @@ class FirebaseAuthImpl @Inject constructor(val firebaseAuth: FirebaseAuth): Fire
         }
     }
 
-    override fun getUserId(): String = firebaseAuth.currentUser?.uid.toString()
+    override fun getUserId(): String = mFirebaseAuth.currentUser?.uid.toString()
 
-    override fun getUsername(): String = firebaseAuth.currentUser?.displayName.toString()
+    override fun getUsername(): String = mFirebaseAuth.currentUser?.displayName.toString()
 
-    override fun getUserEmail(): String = firebaseAuth.currentUser?.email.toString()
+    override fun getUserEmail(): String = mFirebaseAuth.currentUser?.email.toString()
 
-    override fun logout() = firebaseAuth.signOut()
+    override fun logout() {
+        mFirebaseAuth.signOut()
+    }
 
     override fun signIn(
         email: String,
         password: String
     ): Completable {
         return Completable.create { emitter ->
-            firebaseAuth.signInWithEmailAndPassword(email, password)
+            mFirebaseAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener { task ->
                     if (task.isComplete && task.isSuccessful) {
                         emitter.onComplete()
