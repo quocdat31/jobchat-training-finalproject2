@@ -34,19 +34,21 @@ class FirebaseDatabaseImp @Inject constructor(private var firebaseDatabase: Fire
         }
     }
 
-    override fun getFriendList(id: String): Observable<List<Friend>> {
-        return Observable.create { emitter ->
+    override fun getFriendList(id: String): Single<List<Friend>> {
+
+        return Single.create { emitter ->
             firebaseDatabase.reference.child(CHILD_USER_PATH).child(id)
                 .child(CHILD_USER_FRIEND_PATH)
                 .addValueEventListener(object : ValueEventListener {
                     override fun onCancelled(dataSnapshot: DatabaseError) {
                         emitter.onError(dataSnapshot.toException())
                     }
+
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
                         val friendList = dataSnapshot.children.map { childDataSnapshot ->
                             childDataSnapshot.getValue(Friend::class.java)
                         }
-                        emitter.onNext(friendList as List<Friend>)
+                        emitter.onSuccess(friendList as List<Friend>)
                     }
                 })
         }
@@ -61,17 +63,19 @@ class FirebaseDatabaseImp @Inject constructor(private var firebaseDatabase: Fire
                 override fun onCancelled(dataSnapshot: DatabaseError) {
                     emitter.onError(Throwable(dataSnapshot.message))
                 }
+
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
                     if (dataSnapshot.exists()) {
                         for (childDataSnapshot in dataSnapshot.children) {
                             val data = childDataSnapshot.getValue(Friend::class.java)
                             if (data != null) {
-                                emitter.onSuccess(Friend().apply {
+                                val friend = Friend().apply {
                                     id = data.id
                                     name = data.name
                                     email = data.email
                                     status = ADD_FRIEND_REQUEST_STATUS
-                                })
+                                }
+                                emitter.onSuccess(friend)
                             }
                         }
                     } else emitter.onError(Throwable("$friendEmail $DOES_NOT_EXISTS_ERROR"))

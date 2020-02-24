@@ -1,18 +1,18 @@
 package com.example.finalproject2.ui.signin
 
-import androidx.appcompat.app.AppCompatActivity
-import com.example.finalproject2.ui.signup.SignUpActivity
+import android.content.Context
 import com.example.finalproject2.base.BaseNavigator
 import com.example.finalproject2.ui.main.MainActivity
+import com.example.finalproject2.ui.signup.SignUpActivity
 
-class SignInNavigator(activity: AppCompatActivity) : BaseNavigator(activity),
+class SignInNavigator(context: Context) : BaseNavigator(context),
     SignInContract.Navigator {
     override fun navigateHomeScreen() {
-        activity.startActivity(MainActivity.getInstance(activity))
+        context.startActivity(MainActivity.getInstance(context))
     }
 
     override fun navigateSignUpScreen() {
-        activity.startActivity(SignUpActivity.getInstance(activity))
+        context.startActivity(SignUpActivity.getInstance(context))
     }
 
 }
