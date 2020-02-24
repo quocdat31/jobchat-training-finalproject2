@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.example.finalproject2.R
-import com.example.finalproject2.signInPresenter
 import com.example.finalproject2.ultis.gone
 import com.example.finalproject2.ultis.onTextChanged
 import com.example.finalproject2.ultis.toast
@@ -21,7 +20,7 @@ class SignInActivity : AppCompatActivity(), SignInContract.View {
         }
     }
 
-    private val mPresenter by lazy { signInPresenter() }
+    private val mPresenter by lazy { SignInPresenter() }
     private lateinit var mNavigator: SignInNavigator
 
     override fun onCreate(savedInstanceState: Bundle?) {

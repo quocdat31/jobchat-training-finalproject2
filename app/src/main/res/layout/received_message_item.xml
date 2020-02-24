@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:animateLayoutChanges="true"
+    android:padding="@dimen/baseMargin">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/receivedMessageItemAvatarImageView"
+        android:layout_width="@dimen/baseMargin3"
+        android:layout_height="@dimen/baseMargin3"
+        android:scaleType="centerCrop"
+        android:src="@drawable/image" />
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/baseMargin"
+        android:layout_marginLeft="@dimen/baseMargin"
+        android:animateLayoutChanges="true">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:animateLayoutChanges="true"
+            android:background="@color/colorWhite"
+            android:orientation="vertical"
+            android:padding="@dimen/baseMargin">
+
+            <TextView
+                style="@style/MaterialAlertDialog.MaterialComponents.Title.Icon"
+                android:id="@+id/receivedMessageItemContentTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxWidth="@dimen/textInputLayoutWidth"
+                android:text="@string/sampleEmail" />
+
+            <TextView
+                style="@style/TextAppearance.MaterialComponents.Caption"
+                android:layout_gravity="start"
+                android:textColor="@color/colorDarkGray"
+                android:id="@+id/receivedMessageItemDateTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:alpha="0.5"
+                android:maxWidth="@dimen/textInputLayoutWidth"
+                android:text="@string/sampleMessageTime"
+                android:visibility="gone" />
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+</LinearLayout>

@@ -1,20 +1,15 @@
 package com.example.finalproject2.ui.signup
 
-import com.example.finalproject2.firebase.authentication.FirebaseAuthInterface
-import com.example.finalproject2.firebase.database.FirebaseDatabaseInterface
+import com.example.finalproject2.firebase.authentication.FirebaseAuthImpl
+import com.example.finalproject2.firebase.database.FirebaseDatabaseImp
 import com.example.finalproject2.model.SignUpRequest
 import com.example.finalproject2.ultis.ValidationCheck
-import io.reactivex.CompletableObserver
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 
 
-class SignUpPresenter constructor(
-    private val firebaseAuthInterface: FirebaseAuthInterface,
-    private val firebaseDatabaseInterface: FirebaseDatabaseInterface
-) : SignUpContract.Presenter {
+class SignUpPresenter : SignUpContract.Presenter {
 
     private lateinit var mView: SignUpContract.View
     private val mUser = SignUpRequest()
@@ -63,11 +58,11 @@ class SignUpPresenter constructor(
 
     private fun signUp(email: String, password: String, name: String) {
         val disposable =
-            firebaseAuthInterface.signUp(email, password, name)
+            FirebaseAuthImpl.signUp(email, password, name)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
-                    createUser(firebaseAuthInterface.getUserId(), name, email)
+                    createUser(FirebaseAuthImpl.getUserId(), name, email)
                 }, { t: Throwable? ->
                     mView.onRegisterError(t?.message.toString())
                 })
@@ -76,7 +71,7 @@ class SignUpPresenter constructor(
 
     private fun createUser(email: String, password: String, name: String) {
         val disposable =
-            firebaseDatabaseInterface.createUser(email, password, name)
+            FirebaseDatabaseImp.createUser(email, password, name)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({

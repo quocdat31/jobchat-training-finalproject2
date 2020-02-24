@@ -7,24 +7,26 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.finalproject2.contactPresenter
-import com.example.finalproject.ui.home.main_tab_fragment.contact.ContactRecyclerViewAdapter
-import com.example.finalproject.ui.home.main_tab_fragment.contact.OnRecyclerViewItemClickListener
 import com.example.finalproject2.R
-import com.example.finalproject2.model.Friend
+import com.example.finalproject2.model.User
 import com.example.finalproject2.ultis.*
 import kotlinx.android.synthetic.main.fragment_contact.*
 
 class ContactFragment : Fragment(), ContactContract.View, OnRecyclerViewItemClickListener {
 
-    private val mPresenter by lazy { contactPresenter() }
+    private val mPresenter by lazy { ContactPresenter() }
     private var mListener: OnFragmentInteractionListener? = null
+    private var mNavigator: ContactNavigator? = null
+    lateinit var mContext: Context
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_contact, container, false)
+        val view = inflater.inflate(R.layout.fragment_contact, container, false)
+        mNavigator = ContactNavigator(view.context)
+        mContext = view.context
+        return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -57,15 +59,14 @@ class ContactFragment : Fragment(), ContactContract.View, OnRecyclerViewItemClic
         activity?.applicationContext?.toast("$exception")
     }
 
-    override fun onGetContactSuccess(friendList: ArrayList<Friend>) {
+    override fun onGetContactSuccess(friendList: ArrayList<User>) {
         loadingContactListProgressBar.gone()
         contactRecyclerView.apply {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(activity)
             adapter = ContactRecyclerViewAdapter(
                 friendList,
-                activity?.applicationContext,
-                ContactFragment()
+                activity?.applicationContext, this@ContactFragment
             )
             visible()
         }
@@ -75,12 +76,12 @@ class ContactFragment : Fragment(), ContactContract.View, OnRecyclerViewItemClic
         activity?.applicationContext?.toast(error)
     }
 
-    override fun onItemClick(friend: Friend) {
-        mListener?.onFragmentInteraction(friend)
+    override fun onItemClick(user: User) {
+        mListener?.onFragmentInteraction(user)
     }
 
     interface OnFragmentInteractionListener {
-        fun onFragmentInteraction(friend: Friend)
+        fun onFragmentInteraction(user: User)
     }
 
     override fun onAttach(context: Context) {
@@ -88,7 +89,7 @@ class ContactFragment : Fragment(), ContactContract.View, OnRecyclerViewItemClic
         if (context is OnFragmentInteractionListener) {
             mListener = context
         } else {
-            throw RuntimeException(context.toString() + " must implement OnFragmentInteractionListener")
+            throw RuntimeException("$context must implement OnFragmentInteractionListener")
         }
     }
 

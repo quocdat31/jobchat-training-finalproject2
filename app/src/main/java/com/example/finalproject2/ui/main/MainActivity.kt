@@ -3,18 +3,16 @@ package com.example.finalproject2.ui.main
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.example.finalproject2.R
-import com.example.finalproject2.mainPresenter
-import com.example.finalproject2.model.Friend
+import com.example.finalproject2.model.User
+import com.example.finalproject2.ui.conversation.ConversationActivity
 import com.example.finalproject2.ui.main.main_tab_fragment.chat.ChatFragment
 import com.example.finalproject2.ui.main.main_tab_fragment.contact.ContactFragment
 import com.example.finalproject2.ui.main.main_tab_fragment.home.HomeFragment
 import com.example.finalproject2.ui.main.main_tab_fragment.personal.PersonalFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.firebase.database.ValueEventListener
 import kotlinx.android.synthetic.main.activity_home.*
 
 class MainActivity : AppCompatActivity(),
@@ -27,7 +25,8 @@ class MainActivity : AppCompatActivity(),
         }
     }
 
-    private val mPresenter by lazy { mainPresenter() }
+    val EXTRA_KEY = "user"
+    private val mPresenter by lazy { MainPresenter() }
     var mNavigator = MainNavigator(this)
     private lateinit var mNavListener: BottomNavigationView.OnNavigationItemSelectedListener
 
@@ -50,6 +49,7 @@ class MainActivity : AppCompatActivity(),
                 R.id.nav_personal -> selectedFragment =
                     PersonalFragment()
                 R.id.nav_contact -> selectedFragment = ContactFragment()
+                else -> HomeFragment()
             }
             if (selectedFragment != null) {
                 supportFragmentManager.beginTransaction().replace(
@@ -61,7 +61,9 @@ class MainActivity : AppCompatActivity(),
         }
     }
 
-    override fun onFragmentInteraction(friend: Friend) {
-        Log.d("asd", friend.toString())
+    override fun onFragmentInteraction(user: User) {
+        val intent = ConversationActivity.getInstance(this)
+        intent.putExtra(EXTRA_KEY, user)
+        startActivity(intent)
     }
 }

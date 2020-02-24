@@ -10,10 +10,6 @@
     android:padding="@dimen/baseMargin"
     tools:targetApi="o">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="?android:attr/actionBarSize">
-
         <androidx.appcompat.widget.AppCompatImageView
             android:layout_gravity="center"
             android:id="@+id/friendAvatarImageView"
@@ -43,15 +39,12 @@
 
             <TextView
                 style="@style/TextAppearance.MaterialComponents.Body2"
-                android:id="@+id/friendStatusTextView"
+                android:id="@+id/friendEmailTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/sampleEmail" />
 
         </LinearLayout>
-
-    </LinearLayout>
-
 
 </LinearLayout>
 
