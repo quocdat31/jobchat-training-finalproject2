@@ -1,20 +1,27 @@
 package com.example.finalproject2.ui.signin
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.example.finalproject2.R
+import com.example.finalproject2.signInPresenter
 import com.example.finalproject2.ultis.gone
 import com.example.finalproject2.ultis.onTextChanged
 import com.example.finalproject2.ultis.toast
 import com.example.finalproject2.ultis.visible
 import kotlinx.android.synthetic.main.activity_signin.*
-import javax.inject.Inject
 
 class SignInActivity : AppCompatActivity(), SignInContract.View {
 
-    @Inject
-    lateinit var mPresenter: SignInPresenter
+    companion object {
+        fun getInstance(context: Context): Intent {
+            return Intent(context, SignInActivity::class.java)
+        }
+    }
+
+    private val mPresenter by lazy { signInPresenter() }
     private lateinit var mNavigator: SignInNavigator
 
     override fun onCreate(savedInstanceState: Bundle?) {

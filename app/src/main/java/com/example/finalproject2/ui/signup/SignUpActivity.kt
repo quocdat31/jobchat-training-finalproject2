@@ -8,12 +8,12 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
+import android.view.View
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.example.finalproject.ui.register.SignUpContract
-import com.example.finalproject.ui.register.SignUpNavigator
+import com.example.finalproject2.signUpPresenter
 import com.example.finalproject2.R
 import com.example.finalproject2.ultis.gone
 import com.example.finalproject2.ultis.onTextChanged
@@ -30,7 +30,7 @@ class SignUpActivity : AppCompatActivity(), SignUpContract.View {
         }
     }
 
-    private val mPresenter by lazy { registerPresenter() }
+    private val mPresenter by lazy { signUpPresenter() }
     private lateinit var mNavigator: SignUpNavigator
     private val REQUEST_CODE = 1
     private val TITLE = "Select image"
@@ -47,7 +47,8 @@ class SignUpActivity : AppCompatActivity(), SignUpContract.View {
     }
 
     override fun onDestroy() {
-        mPresenter.onStop
+        super.onDestroy()
+        mPresenter.onStop()
     }
 
     override fun onRegisterSuccess() {
@@ -71,7 +72,10 @@ class SignUpActivity : AppCompatActivity(), SignUpContract.View {
     }
 
     override fun showPasswordMatchingError() {
-        registerConfirmPasswordEditText.setError(getString(R.string.confirmPasswordInputError), null)
+        registerConfirmPasswordEditText.setError(
+            getString(R.string.confirmPasswordInputError),
+            null
+        )
     }
 
     override fun showProgressBar() {
@@ -80,7 +84,6 @@ class SignUpActivity : AppCompatActivity(), SignUpContract.View {
     }
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
-
     override fun onAvatarImageViewClick() {
         if (checkSelfPermission()) accessGallery() else requestPermission()
     }
@@ -124,17 +127,17 @@ class SignUpActivity : AppCompatActivity(), SignUpContract.View {
             try {
                 val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, filePath)
                 registerAvatarImageView.setImageBitmap(bitmap)
-                //TODO: upload user image
             } catch (e: IOException) {
                 e.printStackTrace()
             }
+
         }
     }
 
-    private fun checkSelfPermission(): Boolean = ContextCompat.checkSelfPermission(
+    private fun checkSelfPermission(): Boolean = (ContextCompat.checkSelfPermission(
         this,
         READ_EXTERNAL_STORAGE
-    ) == PackageManager.PERMISSION_GRANTED
+    ) == PackageManager.PERMISSION_GRANTED)
 
     private fun requestPermission() =
         ActivityCompat.requestPermissions(this, arrayOf(READ_EXTERNAL_STORAGE), REQUEST_CODE)

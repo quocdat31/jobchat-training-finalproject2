@@ -9,6 +9,6 @@ import io.reactivex.Single
 interface FirebaseDatabaseInterface {
     fun createUser(id: String, name: String, email: String): Completable
     fun addFriend(id: String, friendEmail: String): Completable
-    fun getFriendList(id: String): Observable<List<Friend>>
+    fun getFriendList(id: String): Single<List<Friend>>
     fun findFriendByEmail(friendEmail: String): Single<Friend>
 }

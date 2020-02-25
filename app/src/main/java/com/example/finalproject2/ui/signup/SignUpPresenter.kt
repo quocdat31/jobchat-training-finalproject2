@@ -1,11 +1,13 @@
-package com.example.finalproject.ui.register
+package com.example.finalproject2.ui.signup
 
 import com.example.finalproject2.firebase.authentication.FirebaseAuthInterface
 import com.example.finalproject2.firebase.database.FirebaseDatabaseInterface
 import com.example.finalproject2.model.SignUpRequest
 import com.example.finalproject2.ultis.ValidationCheck
+import io.reactivex.CompletableObserver
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 
 
@@ -16,8 +18,7 @@ class SignUpPresenter constructor(
 
     private lateinit var mView: SignUpContract.View
     private val mUser = SignUpRequest()
-
-    private val mCompositeDisposable = CompositeDisposable()
+    private var mCompositeDisposable = CompositeDisposable()
 
     override fun onUsernameChange(username: String) {
         mUser.name = username
@@ -34,6 +35,7 @@ class SignUpPresenter constructor(
         if (!ValidationCheck.isPasswordValid(password)) {
             mView.showPasswordError()
         }
+
         mUser.password = password
     }
 
@@ -57,30 +59,31 @@ class SignUpPresenter constructor(
     }
 
     override fun onStart() = Unit
-
     override fun onStop() = mCompositeDisposable.clear()
 
     private fun signUp(email: String, password: String, name: String) {
-        val disposable = firebaseAuthInterface.signUp(email, password, name)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
-                mView.onRegisterSuccess()
-                createUser(firebaseAuthInterface.getUserId(), name, email)
-            }, {
-                mView.onRegisterError(it.message.toString())
-            })
+        val disposable =
+            firebaseAuthInterface.signUp(email, password, name)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    createUser(firebaseAuthInterface.getUserId(), name, email)
+                }, { t: Throwable? ->
+                    mView.onRegisterError(t?.message.toString())
+                })
         mCompositeDisposable.add(disposable)
     }
 
-    private fun createUser(id: String, name: String, email: String) {
-        val disposable = firebaseDatabaseInterface.createUser(id, name, email)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
-            }, {
-                mView.onRegisterError(it.message.toString())
-            })
+    private fun createUser(email: String, password: String, name: String) {
+        val disposable =
+            firebaseDatabaseInterface.createUser(email, password, name)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    mView.onRegisterSuccess()
+                }, { t: Throwable? ->
+                    mView.onRegisterError(t?.message.toString())
+                })
         mCompositeDisposable.add(disposable)
     }
 }

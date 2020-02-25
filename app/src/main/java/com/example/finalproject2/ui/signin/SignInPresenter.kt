@@ -5,6 +5,7 @@ import com.example.finalproject2.model.SignInRequest
 import com.example.finalproject2.ultis.ValidationCheck
 import io.reactivex.CompletableObserver
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
@@ -14,19 +15,22 @@ class SignInPresenter @Inject constructor(private val firebaseAuthInterface: Fir
 
     private lateinit var mView: SignInContract.View
     private var mLoginRequest = SignInRequest()
+    private var mCompositeDisposable = CompositeDisposable()
 
     override fun onSubmitLogin() {
         mView.showProgressBar()
         if (ValidationCheck.isSignInValid(mLoginRequest)) {
-            firebaseAuthInterface.signIn(
-                mLoginRequest.email.toString(),
-                mLoginRequest.password.toString()
-            ).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                .subscribe(object : CompletableObserver {
-                    override fun onComplete() = mView.onLoginSuccess()
-                    override fun onSubscribe(d: Disposable) = d.dispose()
-                    override fun onError(e: Throwable) = mView.showLoginError(e.message.toString())
-                })
+            val disposable =
+                firebaseAuthInterface.signIn(
+                    mLoginRequest.email.toString(),
+                    mLoginRequest.password.toString()
+                ).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({
+                        mView.onLoginSuccess()
+                    }, {
+                        mView.showLoginError(it.message.toString())
+                    })
+            mCompositeDisposable.add(disposable)
         }
     }
 
@@ -50,5 +54,5 @@ class SignInPresenter @Inject constructor(private val firebaseAuthInterface: Fir
 
     override fun onStart() = Unit
 
-    override fun onStop() = Unit
+    override fun onStop() = mCompositeDisposable.clear()
 }

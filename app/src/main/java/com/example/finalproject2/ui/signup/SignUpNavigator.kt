@@ -1,12 +1,12 @@
-package com.example.finalproject.ui.register
+package com.example.finalproject2.ui.signup
 
-import androidx.appcompat.app.AppCompatActivity
+import android.content.Context
 import com.example.finalproject2.base.BaseNavigator
 import com.example.finalproject2.ui.main.MainActivity
 
-class SignUpNavigator(activity: AppCompatActivity) : BaseNavigator(activity),
+class SignUpNavigator(context: Context) : BaseNavigator(context),
     SignUpContract.Navigator {
     override fun navigateMainScreen() {
-        activity.startActivity(MainActivity.getInstance(activity))
+        context.startActivity(MainActivity.getInstance(context))
     }
 }
