@@ -6,6 +6,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.example.finalproject2.R
+import com.example.finalproject2.firebase.database.FirebaseDatabaseImp
 import com.example.finalproject2.model.User
 import com.example.finalproject2.ui.conversation.ConversationActivity
 import com.example.finalproject2.ui.main.main_tab_fragment.chat.ChatFragment

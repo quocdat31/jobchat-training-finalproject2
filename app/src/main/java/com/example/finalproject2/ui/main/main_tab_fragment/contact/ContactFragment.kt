@@ -77,6 +77,7 @@ class ContactFragment : Fragment(), ContactContract.View, OnRecyclerViewItemClic
     }
 
     override fun onItemClick(user: User) {
+        mPresenter.accessConversation(user)
         mListener?.onFragmentInteraction(user)
     }
 

@@ -19,14 +19,17 @@ class ContactPresenter :
     override fun onStop() = mCompositeDisposable.clear()
 
     override fun addFriend() {
+        val friendEmail = mFriend.email.toString()
         val disposable =
-            FirebaseDatabaseImp.addFriend(
-                mFriend.email.toString()
-            ).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+            FirebaseDatabaseImp
+                .addFriend(friendEmail)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
                     mView.onAddFriendSuccess()
                 }, { t: Throwable? ->
-                    mView.onAddFriendError(t?.message.toString())
+                    val error = t?.message.toString()
+                    mView.onAddFriendError(error)
                 })
         mCompositeDisposable.add(disposable)
     }
@@ -41,8 +44,11 @@ class ContactPresenter :
 
     override fun getContactList(id: String) {
         val disposable =
-            FirebaseDatabaseImp.getFriendList().subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread()).subscribe({ t: List<User>? ->
+            FirebaseDatabaseImp
+                .getFriendList()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ t: List<User>? ->
                     mView.onGetContactSuccess(t as ArrayList<User>)
                 }, { t: Throwable? ->
                     mView.onAddFriendError(t?.message.toString())
@@ -52,5 +58,19 @@ class ContactPresenter :
 
     override fun setView(view: ContactContract.View) {
         this.mView = view
+    }
+
+    fun accessConversation(user: User) {
+        val disposable =
+            FirebaseDatabaseImp
+                .accessConversation(user)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+
+                }, {
+
+                })
+        mCompositeDisposable.add(disposable)
     }
 }

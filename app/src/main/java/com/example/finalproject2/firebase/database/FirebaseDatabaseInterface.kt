@@ -17,8 +17,11 @@ interface FirebaseDatabaseInterface {
     fun findFriendByEmail(friendEmail: String): Single<User>
 
     //chat
-    fun createConversation(memberList: ArrayList<String>): Single<String>
+//    fun createConversation(conversationId: String, friendId: String): Completable
+
+
     fun sendMessage(conversationId: String, message: Message): Completable
     fun getMessageList(conversationId: String): Observable<List<Message>>
-    fun findConversation(friendEmail: String): Single<String>
+    fun accessConversation(user: User): Single<String>
+    fun startListeningMessageListChange(conversationId: String): Single<Message>
 }

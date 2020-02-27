@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:backgroundTint="@color/colorPrimaryLight"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -26,13 +27,26 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/conversationActivityRecyclerView"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:background="@color/colorPrimaryLight"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/conversationActivityRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <ProgressBar
+            android:id="@+id/conversationActivityProgressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true" />
+
+    </RelativeLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -62,6 +76,7 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <ImageView
+            style="?android:attr/actionButtonStyle"
             android:id="@+id/conversationActivitySendMessageButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -69,8 +84,6 @@
             android:layout_alignParentRight="true"
             android:layout_gravity="end"
             android:background="?android:attr/selectableItemBackground"
-            android:clickable="true"
-            android:focusable="true"
             android:padding="@dimen/baseMargin2"
             android:src="@drawable/ic_send_black_24dp"
             app:tint="@color/colorPrimary" />

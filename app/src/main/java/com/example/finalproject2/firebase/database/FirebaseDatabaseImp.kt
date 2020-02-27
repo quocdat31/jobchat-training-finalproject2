@@ -5,10 +5,7 @@ import com.example.finalproject2.firebase.authentication.FirebaseAuthImpl
 import com.example.finalproject2.model.Message
 import com.example.finalproject2.model.User
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.*
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
@@ -68,7 +65,8 @@ object FirebaseDatabaseImp :
 
     override fun findFriendByEmail(friendEmail: String): Single<User> {
         val query =
-            mFirebaseDatabaseReference.child(CHILD_USER_PATH)
+            mFirebaseDatabaseReference
+                .child(CHILD_USER_PATH)
                 .orderByChild(CHILD_EMAIL)
                 .equalTo(friendEmail)
         return Single.create { emitter ->
@@ -95,38 +93,64 @@ object FirebaseDatabaseImp :
         }
     }
 
-    override fun createConversation(memberList: ArrayList<String>): Single<String> {
-        return Single.create { emitter ->
-            val conversationId = mFirebaseDatabaseReference.child(CONVERSATIONS_PATH).push().key
-            mFirebaseDatabaseReference.child(CONVERSATIONS_PATH).child(conversationId.toString())
-                .setValue(conversationId.toString())
-                .addOnCompleteListener { task ->
+//    override fun createConversation(conversationId: String, friendId: String): Completable {
+//        return Completable.create { emitter ->
+//
+//            val hashMap = hashMapOf<String, Any>()
+//            val key = mFirebaseDatabaseReference.child(CONVERSATIONS_PATH).push().key
+//            val currentUserId = FirebaseAuthImpl.getUserId()
+//            val currentUserPath =
+//                "$CHILD_USER_PATH/$currentUserId/$CONVERSATIONS_PATH/$key/$CHILD_ID_PATH"
+//            val friendPath =
+//                "$CHILD_USER_PATH/$friendId/$CONVERSATIONS_PATH/$key/$CHILD_ID_PATH"
+//
+//            hashMap.put(currentUserPath, conversationId)
+//            hashMap.put(friendPath, conversationId)
+//
+//            mFirebaseDatabaseReference.updateChildren(hashMap)
+//                .addOnCompleteListener { task ->
+//                    if (task.isComplete && task.isSuccessful) {
+//                        emitter.onComplete()
+//                    }
+//                }
+//                .addOnFailureListener { exception ->
+//                    emitter.onError(exception)
+//                }
+//
+//        }
+//    }
 
-                    //users/conversation/
-                    if (task.isSuccessful && task.isComplete) {
-                        mFirebaseDatabaseReference.child(CHILD_USER_PATH)
-                            .child(FirebaseAuthImpl.getUserId()).child(
-                                CONVERSATIONS_PATH
-                            ).child(conversationId.toString()).child(CHILD_ID_PATH)
-                            .setValue(conversationId.toString())
-                        emitter.onSuccess(conversationId.toString())
-
-                        //conversations/memberList
-                        val memberId = mFirebaseDatabaseReference.child(CONVERSATIONS_PATH).child(
-                            CHILD_MEMBER_LIST
-                        ).push().key
-                        for (member in memberList) {
-                            mFirebaseDatabaseReference.child(CONVERSATIONS_PATH)
-                                .child(CHILD_MEMBER_LIST).child(memberId.toString()).setValue(member)
-                        }
-
-                    }
-                }
-                .addOnFailureListener { exception ->
-                    emitter.onError(exception)
-                }
-        }
-    }
+//    override fun createConversation(memberList: ArrayList<String>): Single<String> {
+//        return Single.create { emitter ->
+//            val conversationId = mFirebaseDatabaseReference.child(CONVERSATIONS_PATH).push().key
+//            mFirebaseDatabaseReference.child(CONVERSATIONS_PATH).child(conversationId.toString())
+//                .child(CHILD_ID_PATH)
+//                .setValue(conversationId.toString())
+//                .addOnCompleteListener { task ->
+//
+//                    //users/conversation/
+//                    for (memberId in memberList) {
+//                        if (task.isSuccessful && task.isComplete) {
+//                            mFirebaseDatabaseReference.child(CHILD_USER_PATH)
+//                                .child(memberId).child(
+//                                    CONVERSATIONS_PATH
+//                                ).child(conversationId.toString()).child(CHILD_ID_PATH)
+//                                .setValue(conversationId.toString())
+//                            emitter.onSuccess(conversationId.toString())
+//                        }
+//                    }
+//
+//                    //conversations/memberList
+//                    mFirebaseDatabaseReference.child(CONVERSATIONS_PATH)
+//                        .child(conversationId.toString())
+//                        .child(CHILD_MEMBER_LIST).setValue(memberList)
+//
+//                }
+//                .addOnFailureListener { exception ->
+//                    emitter.onError(exception)
+//                }
+//        }
+//    }
 
     override fun sendMessage(conversationId: String, message: Message): Completable {
         return Completable.create { emitter ->
@@ -145,7 +169,7 @@ object FirebaseDatabaseImp :
     override fun getMessageList(conversationId: String): Observable<List<Message>> {
         return Observable.create { emitter ->
             mFirebaseDatabaseReference.child(MESSAGES_PATH).child(conversationId)
-                .addValueEventListener(object : ValueEventListener {
+                .addListenerForSingleValueEvent(object : ValueEventListener {
                     override fun onCancelled(p0: DatabaseError) = emitter.onError(p0.toException())
                     override fun onDataChange(p0: DataSnapshot) {
                         val messageList = p0.children.map { childDataSnapshot ->
@@ -157,40 +181,81 @@ object FirebaseDatabaseImp :
         }
     }
 
-    override fun findConversation(friendEmail: String): Single<String> {
-        val query =
-            mFirebaseDatabaseReference.child(CONVERSATIONS_PATH).orderByChild(CHILD_MEMBER_LIST)
-                .equalTo(friendEmail)
+    override fun accessConversation(user: User): Single<String> {
         return Single.create { emitter ->
-            query.addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onCancelled(p0: DatabaseError) = emitter.onError(p0.toException())
-                override fun onDataChange(p0: DataSnapshot) {
-                    if (p0.exists()) {
-                        emitter.onSuccess(p0.value.toString())
-                        Log.d("asd", "success: ${p0.value.toString()}")
+            mFirebaseDatabaseReference
+                .child(CHILD_USER_PATH)
+                .child(user.id.toString())
+                .child(CONVERSATIONS_PATH)
+                .orderByChild(CHILD_ID_PATH)
+                .equalTo(FirebaseAuthImpl.getUserId())
+                .addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onCancelled(p0: DatabaseError) {
+
                     }
-                    Log.d("asd", p0.toString())
-                }
+
+                    override fun onDataChange(p0: DataSnapshot) {
+                        Log.d("asd", p0.toString())
+                    }
             })
         }
     }
 
+    override fun startListeningMessageListChange(conversationId: String): Single<Message> {
+        return Single.create { emitter ->
+            mFirebaseDatabaseReference.child(MESSAGES_PATH).child(conversationId)
+                .addChildEventListener(object : ChildEventListener {
+                    override fun onCancelled(p0: DatabaseError) = emitter.onError(p0.toException())
+                    override fun onChildMoved(p0: DataSnapshot, p1: String?) = Unit
+                    override fun onChildChanged(p0: DataSnapshot, p1: String?) = Unit
+                    override fun onChildAdded(p0: DataSnapshot, p1: String?) {
+                        emitter.onSuccess(p0.getValue(Message::class.java)!!)
+                    }
+
+                    override fun onChildRemoved(p0: DataSnapshot) = Unit
+                })
+        }
+    }
+
     override fun addFriend(friendEmail: String): Completable {
-        val friendReference =
-            mFirebaseDatabaseReference.child(CHILD_CONTACT_PATH).child(FirebaseAuthImpl.getUserId())
-                .push()
+        val contactKey =
+            mFirebaseDatabaseReference
+                .child(CHILD_CONTACT_PATH)
+                .child(FirebaseAuthImpl.getUserId())
+                .push().key.toString()
+        //current user add friend
         return Completable.create { emitter ->
-            findFriendByEmail(friendEmail).subscribe { user, error ->
-                friendReference.setValue(user).addOnCompleteListener { task ->
-                    if (task.isComplete && task.isSuccessful)
-                        emitter.onComplete()
+            findFriendByEmail(friendEmail)
+                .subscribe { user, error ->
+                    mFirebaseDatabaseReference.child(CHILD_CONTACT_PATH)
+                        .child(FirebaseAuthImpl.getUserId())
+                        .child(contactKey)
+                        .setValue(user)
+                        .addOnCompleteListener { task ->
+                            if (task.isComplete && task.isSuccessful) {
+                                //friend add current user
+                                val currentUser = User(
+                                    id = FirebaseAuthImpl.getUserId(),
+                                    name = FirebaseAuthImpl.getUserEmail(),
+                                    email = FirebaseAuthImpl.getUserEmail()
+                                )
+                                mFirebaseDatabaseReference.child(CHILD_CONTACT_PATH)
+                                    .child(user.id.toString()).child(contactKey)
+                                    .setValue(currentUser).addOnCompleteListener { task2 ->
+                                        if (task2.isSuccessful && task2.isComplete) {
+                                            emitter.onComplete()
+                                        }
+                                    }.addOnFailureListener { exception ->
+                                        emitter.onError(exception)
+                                    }
+                            } else {
+                                emitter.onError(error)
+                            }
                 }
                     .addOnFailureListener { exception ->
                         emitter.onError(exception)
                     }
-                emitter.onError(error)
             }
         }
     }
-
 }
