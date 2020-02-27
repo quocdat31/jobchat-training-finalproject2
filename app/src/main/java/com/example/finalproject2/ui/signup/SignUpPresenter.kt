@@ -30,7 +30,6 @@ class SignUpPresenter : SignUpContract.Presenter {
         if (!ValidationCheck.isPasswordValid(password)) {
             mView.showPasswordError()
         }
-
         mUser.password = password
     }
 
@@ -47,6 +46,7 @@ class SignUpPresenter : SignUpContract.Presenter {
             val (name, email, password) = mUser
             signUp(email.toString(), password.toString(), name.toString())
         }
+        mView.showSignUpError()
     }
 
     override fun setView(view: SignUpContract.View) {

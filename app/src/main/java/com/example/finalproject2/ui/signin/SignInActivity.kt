@@ -4,13 +4,13 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.viewpager.widget.ViewPager
 import com.example.finalproject2.R
-import com.example.finalproject2.ultis.gone
-import com.example.finalproject2.ultis.onTextChanged
-import com.example.finalproject2.ultis.toast
-import com.example.finalproject2.ultis.visible
+import com.example.finalproject2.ultis.*
 import kotlinx.android.synthetic.main.activity_signin.*
+
 
 class SignInActivity : AppCompatActivity(), SignInContract.View {
 
@@ -29,6 +29,10 @@ class SignInActivity : AppCompatActivity(), SignInContract.View {
 
         initView()
         addEditTextListener()
+
+        val viewPager = findViewById<View>(R.id.signInViewPager) as ViewPager
+        viewPager.adapter = SlideAdapter(this)
+
 
     }
 
@@ -81,4 +85,5 @@ class SignInActivity : AppCompatActivity(), SignInContract.View {
             onSignUpButtonClick()
         }
     }
+
 }

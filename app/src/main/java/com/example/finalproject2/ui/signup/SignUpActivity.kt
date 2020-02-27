@@ -8,6 +8,7 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -86,6 +87,10 @@ class SignUpActivity : AppCompatActivity(), SignUpContract.View {
         if (checkSelfPermission()) accessGallery() else requestPermission()
     }
 
+    override fun showSignUpError() {
+        this.toast("Invalid input")
+    }
+
     private fun initView() {
         mPresenter.setView(this)
         mNavigator = SignUpNavigator(this)
@@ -98,6 +103,7 @@ class SignUpActivity : AppCompatActivity(), SignUpContract.View {
         }
 
         registerAvatarImageView.setOnClickListener {
+            Log.d("asd","l")
             onAvatarImageViewClick()
         }
 

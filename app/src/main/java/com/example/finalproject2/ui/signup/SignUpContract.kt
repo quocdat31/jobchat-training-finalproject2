@@ -13,6 +13,7 @@ interface SignUpContract {
         fun showPasswordMatchingError()
         fun showProgressBar()
         fun onAvatarImageViewClick()
+        fun showSignUpError()
     }
 
     interface Presenter : BasePresenter<View> {

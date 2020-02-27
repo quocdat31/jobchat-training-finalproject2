@@ -8,66 +8,82 @@
     android:orientation="vertical"
     tools:context=".ui.signin.SignInActivity">
 
-    <com.google.android.material.textfield.TextInputLayout
-        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense"
-        android:layout_width="@dimen/textInputLayoutWidth"
-        android:layout_height="56dp"
-        android:layout_marginVertical="@dimen/baseMargin"
-        android:hint="@string/emailInputHInt"
-        app:helperText="@string/emailInputHelper">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/signInEmailEditText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textEmailAddress" />
-
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense"
-        android:layout_width="@dimen/textInputLayoutWidth"
-        android:layout_height="@dimen/textInputLayoutHeight"
-        android:layout_marginVertical="@dimen/baseMargin"
-        android:hint="@string/passwordInputHint"
-        app:helperText="@string/passwordInputHelper"
-        app:passwordToggleEnabled="true">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/signInPasswordEditText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textPassword" />
-
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <ProgressBar
-        android:id="@+id/loginProgressBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone" />
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/submitLoginButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/signIn" />
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/signInViewPager"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
 
     <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="vertical">
 
-        <TextView
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="@dimen/textInputLayoutWidth"
+            android:layout_height="56dp"
+            android:layout_marginVertical="@dimen/baseMargin"
+            android:hint="@string/emailInputHInt"
+            app:helperText="@string/emailInputHelper">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/signInEmailEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textEmailAddress" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+            android:layout_width="@dimen/textInputLayoutWidth"
+            android:layout_height="@dimen/textInputLayoutHeight"
+            android:layout_marginVertical="@dimen/baseMargin"
+            android:hint="@string/passwordInputHint"
+            app:helperText="@string/passwordInputHelper"
+            app:passwordToggleEnabled="true">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/signInPasswordEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <ProgressBar
+            android:id="@+id/loginProgressBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/requestSignUp" />
+            android:visibility="gone" />
 
-        <TextView
-            android:id="@+id/signUpButton"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/submitLoginButton"
+            android:layout_width="@dimen/textInputLayoutWidth"
+            android:layout_height="@dimen/textInputLayoutHeight"
+            android:text="@string/signIn" />
+
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/signUp" />
+            android:layout_gravity="center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/requestSignUp" />
+
+            <TextView
+                android:id="@+id/signUpButton"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/signUp" />
+
+        </LinearLayout>
 
     </LinearLayout>
 

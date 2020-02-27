@@ -4,16 +4,18 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.view.MenuItem
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.finalproject2.R
+import com.example.finalproject2.firebase.authentication.FirebaseAuthImpl
 import com.example.finalproject2.model.Message
 import com.example.finalproject2.model.User
 import com.example.finalproject2.ultis.clear
 import com.example.finalproject2.ultis.getString
+import com.example.finalproject2.ultis.gone
 import com.example.finalproject2.ultis.toast
-import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_conversation.*
 import java.util.*
 
@@ -29,41 +31,84 @@ class ConversationActivity : AppCompatActivity(), ConversationContract.View,
     private val mPresenter: ConversationPresenter = ConversationPresenter()
     lateinit var mConversationID: String
     private val EXTRA_KEY = "user"
+    private val INPUT_EMPTY_ERROR = "Cannot send empty message"
+    lateinit var mAdapter: ConversationRecyclerViewAdapter
+    lateinit var mUser: User
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_conversation)
 
-        val user: User = intent.getSerializableExtra(EXTRA_KEY) as User
-        configActionBar(user)
-
-        val memberList = arrayListOf<String>()
-        memberList.add(user.id.toString())
-        memberList.add(FirebaseAuth.getInstance().currentUser?.uid.toString())
-
-        mPresenter.setView(this)
-
-        if (mPresenter.findConversation(user.id.toString()).isEmpty())
-            mPresenter.createConversation(memberList)
+        mUser = intent.getSerializableExtra(EXTRA_KEY) as User
+        initView(mUser)
 
         conversationActivitySendMessageButton.setOnClickListener {
-            val message = Message().apply {
-                sender = FirebaseAuth.getInstance().currentUser?.uid.toString()
-                receiver = user.id
-                text = conversationActivityMessageTextInput.getString()
+            if (conversationActivityMessageTextInput.getString() == "") {
+                onEmptyMessageInput()
+            } else {
+
+
+                val message = Message().apply {
+                    sender = FirebaseAuthImpl.getUserId()
+                    receiver = mUser.id
+                    text = conversationActivityMessageTextInput.getString()
+                }
+                mPresenter.sendMessage(mUser.id.toString(), message)
+
+
+                conversationActivityMessageTextInput.clear()
             }
-            mPresenter.sendMessage(
-                mConversationID,
-                message
-            )
-            conversationActivityMessageTextInput.clear()
         }
     }
 
     override fun onDestroy() {
         super.onDestroy()
         mPresenter.onStop()
+    }
+
+    override fun onSendMessageSuccess(message: Message) {
+        mAdapter.updateMessage(message)
+        conversationActivityRecyclerView.smoothScrollToPosition(mAdapter.itemCount - 1)
+    }
+
+    override fun onSendMessageError(error: String) {
+        this.toast(error)
+    }
+
+    override fun onGetMessageListSuccess(messageList: ArrayList<Message>) {
+        mAdapter = ConversationRecyclerViewAdapter(messageList, this, this)
+        conversationActivityRecyclerView.apply {
+            adapter = mAdapter
+            layoutManager = LinearLayoutManager(this@ConversationActivity)
+            setHasFixedSize(true)
+            if (messageList.isNotEmpty()) {
+                smoothScrollToPosition(mAdapter.itemCount - 1)
+            }
+        }
+        conversationActivityProgressBar.gone()
+    }
+
+    override fun onGetMessageListError(error: String) {
+        this.toast(error)
+    }
+
+    override fun onCreateConversationSuccess(conversationId: String) {
+        mConversationID = conversationId
+    }
+
+    override fun onEmptyMessageInput() {
+        this.toast(INPUT_EMPTY_ERROR)
+    }
+
+    override fun onItemClick(message: Message) {
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == android.R.id.home) {
+            onBackPressed()
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     private fun configActionBar(user: User) {
@@ -76,31 +121,9 @@ class ConversationActivity : AppCompatActivity(), ConversationContract.View,
         }
     }
 
-    override fun onSendMessageSuccess() {
-        //TODO: notifyDataSetChange, scroll to bottom of recycler view
+    private fun initView(user: User) {
+        mPresenter.getMessageList(user.id.toString())
+        mPresenter.setView(this)
+        configActionBar(user)
     }
-
-    override fun onSendMessageError(error: String) {
-        this.toast(error)
-    }
-
-    override fun onGetMessageListSuccess(messageList: ArrayList<Message>) {
-        conversationActivityRecyclerView.adapter =
-            ConversationRecyclerViewAdapter(messageList, this, this)
-        conversationActivityRecyclerView.layoutManager = LinearLayoutManager(this)
-        conversationActivityRecyclerView.setHasFixedSize(true)
-    }
-
-    override fun onGetMessageListError(error: String) {
-        this.toast(error)
-    }
-
-    override fun onCreateConversationSuccess(conversationId: String) {
-        mConversationID = conversationId
-    }
-
-    override fun onItemClick(message: Message) {
-
-    }
-
 }

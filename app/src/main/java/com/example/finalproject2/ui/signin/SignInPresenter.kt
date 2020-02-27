@@ -15,8 +15,8 @@ class SignInPresenter :
     private var mCompositeDisposable = CompositeDisposable()
 
     override fun onSubmitLogin() {
-        mView.showProgressBar()
         if (ValidationCheck.isSignInValid(mLoginRequest)) {
+            mView.showProgressBar()
             val disposable =
                 FirebaseAuthImpl.signIn(
                     mLoginRequest.email.toString(),
@@ -28,21 +28,21 @@ class SignInPresenter :
                         mView.showLoginError(it.message.toString())
                     })
             mCompositeDisposable.add(disposable)
-        }
+        } else mView.showLoginError("Invalid input")
     }
 
     override fun onEmailChange(email: String) {
         if (!ValidationCheck.isEmailValid(email)) {
             mView.showEmailError()
-        }
-        mLoginRequest.email = email
+        } else
+            mLoginRequest.email = email
     }
 
     override fun onPasswordChange(password: String) {
         if (!ValidationCheck.isPasswordValid(password)) {
             mView.showPasswordError()
-        }
-        mLoginRequest.password = password
+        } else
+            mLoginRequest.password = password
     }
 
     override fun setView(view: SignInContract.View) {

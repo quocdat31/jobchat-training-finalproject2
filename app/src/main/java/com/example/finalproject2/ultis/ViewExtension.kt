@@ -6,6 +6,10 @@ fun View.disable() {
     this.isEnabled = false
 }
 
+fun View.enable() {
+    this.isEnabled = true
+}
+
 fun View.visible() {
     this.visibility = View.VISIBLE
 }

@@ -8,34 +8,31 @@
     android:orientation="vertical"
     tools:context=".ui.signup.SignUpActivity">
 
-    <ImageView
-        android:background="@color/colorLightGray"
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:src="@color/colorLightGray"
         android:id="@+id/registerAvatarImageView"
         android:scaleType="centerCrop"
-        android:layout_margin="@dimen/baseMargin"
+        android:layout_margin="@dimen/baseMargin3"
         android:layout_width="@dimen/registerImagePreviewDimension"
         android:layout_height="@dimen/registerImagePreviewDimension"/>
 
     <com.google.android.material.textfield.TextInputLayout
-
-        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
         android:layout_width="@dimen/textInputLayoutWidth"
         android:layout_height="@dimen/textInputLayoutHeight"
         android:layout_marginVertical="@dimen/baseMargin"
         android:hint="@string/emailInputHInt"
         app:helperText="@string/emailInputHelper"
         tools:targetApi="o">
-
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/registerEmailEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textEmailAddress" />
-
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
         android:layout_width="@dimen/textInputLayoutWidth"
         android:layout_height="@dimen/textInputLayoutHeight"
         android:layout_marginVertical="@dimen/baseMargin"
@@ -52,7 +49,7 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
         android:layout_width="@dimen/textInputLayoutWidth"
         android:layout_height="@dimen/textInputLayoutHeight"
         android:layout_marginVertical="@dimen/baseMargin"
@@ -69,7 +66,7 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
         android:layout_width="@dimen/textInputLayoutWidth"
         android:layout_height="@dimen/textInputLayoutHeight"
         android:layout_marginVertical="@dimen/baseMargin"
@@ -91,8 +88,8 @@
 
     <Button
         android:id="@+id/submitRegisterButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/textInputLayoutWidth"
+        android:layout_height="@dimen/textInputLayoutHeight"
         android:text="@string/signUp" />
 
 

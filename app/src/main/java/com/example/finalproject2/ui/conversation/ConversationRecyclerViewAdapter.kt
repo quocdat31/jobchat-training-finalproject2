@@ -178,4 +178,9 @@ class ConversationRecyclerViewAdapter(
             }
         }
     }
+
+    fun updateMessage(message: Message) {
+        items.add(message)
+        notifyDataSetChanged()
+    }
 }

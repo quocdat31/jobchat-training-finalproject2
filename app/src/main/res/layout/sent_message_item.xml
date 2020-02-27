@@ -24,6 +24,7 @@
         android:padding="@dimen/baseMargin">
 
         <TextView
+            style="@style/MaterialAlertDialog.MaterialComponents.Title.Icon"
             android:id="@+id/sentMessageItemContentTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
