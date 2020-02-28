@@ -14,5 +14,4 @@ class SignInNavigator(context: Context) : BaseNavigator(context),
     override fun navigateSignUpScreen() {
         context.startActivity(SignUpActivity.getInstance(context))
     }
-
 }

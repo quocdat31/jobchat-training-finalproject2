@@ -6,9 +6,21 @@
     <dimen name="baseMargin2">16dp</dimen>
     <dimen name="baseMargin3">32dp</dimen>
     <dimen name="registerImagePreviewDimension">148dp</dimen>
-    <dimen name="contactImageViewDimension">48dp</dimen>
+
+    <dimen name="contactItemImageViewDimension">40dp</dimen>
+    <dimen name="contactItemHeight">72dp</dimen>
 
     <dimen name="textInputLayoutHeight">56dp</dimen>
     <dimen name="textInputLayoutWidth">280dp</dimen>
+
+    <dimen name="messageItemMinWidth">56dp</dimen>
+
+    <dimen name="image_width">120dp</dimen>
+    <dimen name="image_final_width">32dp</dimen>
+    <dimen name="spacing_normal">16dp</dimen>
+
+    <dimen name="userDetailCoverBackgroundCardViewWidth">344dp</dimen>
+    <dimen name="userDetailCoverBackgroundCardViewHeight">194dp</dimen>
+    <dimen name="userDetailCardViewHeaderHeight">72dp</dimen>
 
 </resources>

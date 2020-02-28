@@ -3,14 +3,11 @@ package com.example.finalproject2.ui.signin
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.example.finalproject2.R
-import com.example.finalproject2.ultis.gone
-import com.example.finalproject2.ultis.onTextChanged
-import com.example.finalproject2.ultis.toast
-import com.example.finalproject2.ultis.visible
+import com.example.finalproject2.ultis.extension.*
 import kotlinx.android.synthetic.main.activity_signin.*
+
 
 class SignInActivity : AppCompatActivity(), SignInContract.View {
 
@@ -29,12 +26,13 @@ class SignInActivity : AppCompatActivity(), SignInContract.View {
 
         initView()
         addEditTextListener()
+        initSlideViewPager()
 
     }
 
     override fun showProgressBar() {
-        submitLoginButton.gone()
-        loginProgressBar.visible()
+        signInButtonTextView.gone()
+        signInButtonProgressBar.visible()
     }
 
     override fun showPasswordError() {
@@ -47,14 +45,15 @@ class SignInActivity : AppCompatActivity(), SignInContract.View {
 
     override fun showLoginError(error: String) {
         this.toast(error)
-        if (submitLoginButton.visibility == View.GONE) {
-            submitLoginButton.visible()
-            loginProgressBar.gone()
+        if (signInButtonTextView.isGone()) {
+            signInButtonTextView.visible()
+            signInButtonProgressBar.gone()
         }
     }
 
     override fun onLoginSuccess() {
-        loginProgressBar.gone()
+        signInButtonProgressBar.gone()
+        signInSuccessImageView.visible()
         mNavigator.navigateHomeScreen()
     }
 
@@ -74,11 +73,17 @@ class SignInActivity : AppCompatActivity(), SignInContract.View {
         signInPasswordEditText.onTextChanged { password ->
             mPresenter.onPasswordChange(password)
         }
-        submitLoginButton.setOnClickListener {
+        signInButtonTextView.setOnClickListener {
             mPresenter.onSubmitLogin()
         }
         signUpButton.setOnClickListener {
             onSignUpButtonClick()
         }
     }
+
+    private fun initSlideViewPager() {
+        signInActivitySlideIndicator.setupWithViewPager(signInViewPager)
+        signInViewPager.adapter = SlideAdapter(this)
+    }
+
 }

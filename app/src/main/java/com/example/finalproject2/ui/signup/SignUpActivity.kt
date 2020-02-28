@@ -5,20 +5,25 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.provider.MediaStore
+import android.webkit.MimeTypeMap
+import android.widget.LinearLayout
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.finalproject2.R
-import com.example.finalproject2.ultis.gone
-import com.example.finalproject2.ultis.onTextChanged
-import com.example.finalproject2.ultis.toast
-import com.example.finalproject2.ultis.visible
+import com.example.finalproject2.firebase.authentication.FirebaseAuthImpl
+import com.example.finalproject2.ultis.extension.gone
+import com.example.finalproject2.ultis.extension.onTextChanged
+import com.example.finalproject2.ultis.extension.toast
+import com.example.finalproject2.ultis.extension.visible
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_register.*
-import java.io.IOException
+import kotlinx.android.synthetic.main.sign_up_pick_image_options.*
 
 class SignUpActivity : AppCompatActivity(), SignUpContract.View {
 
@@ -33,6 +38,8 @@ class SignUpActivity : AppCompatActivity(), SignUpContract.View {
     private val REQUEST_CODE = 1
     private val TITLE = "Select image"
     private val IMAGE_PATH = "image/*"
+    lateinit var mImageUri: Uri
+    lateinit var mBottomSheetBehavior: BottomSheetBehavior<LinearLayout>
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,7 +48,8 @@ class SignUpActivity : AppCompatActivity(), SignUpContract.View {
 
         initView()
         addEditTextListener()
-
+        mBottomSheetBehavior = BottomSheetBehavior.from(signUpPickImageOptionsBottomSheet)
+        mBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
     }
 
     override fun onDestroy() {
@@ -53,6 +61,10 @@ class SignUpActivity : AppCompatActivity(), SignUpContract.View {
         this.toast(getString(R.string.onSuccess))
         mNavigator.navigateMainScreen()
         registerProgressBar.gone()
+        FirebaseAuthImpl.signIn(
+            registerEmailEditText.toString(),
+            registerPasswordEditText.toString()
+        )
     }
 
     override fun onRegisterError(e: String) {
@@ -83,7 +95,14 @@ class SignUpActivity : AppCompatActivity(), SignUpContract.View {
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
     override fun onAvatarImageViewClick() {
-        if (checkSelfPermission()) accessGallery() else requestPermission()
+        mBottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+        signUpPickImageGallery.setOnClickListener {
+            if (checkSelfPermission()) accessGallery() else requestPermission()
+        }
+    }
+
+    override fun showSignUpError() {
+        this.toast("Invalid input")
     }
 
     private fun initView() {
@@ -121,15 +140,15 @@ class SignUpActivity : AppCompatActivity(), SignUpContract.View {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            val filePath = data?.data
-            try {
-                val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, filePath)
-                registerAvatarImageView.setImageBitmap(bitmap)
-            } catch (e: IOException) {
-                e.printStackTrace()
-            }
-
+            mImageUri = data?.data!!
+            Picasso.get().load(mImageUri).into(registerAvatarImageView)
+            mPresenter.onPickImage(mImageUri)
         }
+    }
+
+    private fun getExtension(uri: Uri): String {
+        val mimeTypeMap = MimeTypeMap.getSingleton()
+        return mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(uri)).toString()
     }
 
     private fun checkSelfPermission(): Boolean = (ContextCompat.checkSelfPermission(
@@ -145,11 +164,12 @@ class SignUpActivity : AppCompatActivity(), SignUpContract.View {
             type = IMAGE_PATH
             action = Intent.ACTION_GET_CONTENT
         }
-        ActivityCompat.startActivityForResult(
-            this,
+        startActivityForResult(
             Intent.createChooser(intent, TITLE),
-            REQUEST_CODE,
-            null
+            REQUEST_CODE
         )
+    }
+
+    fun initBottomSheet() {
     }
 }

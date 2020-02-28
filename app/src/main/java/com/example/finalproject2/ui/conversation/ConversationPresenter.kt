@@ -5,7 +5,6 @@ import com.example.finalproject2.model.Message
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
-import java.util.*
 
 class ConversationPresenter : ConversationContract.Presenter {
 
@@ -18,7 +17,7 @@ class ConversationPresenter : ConversationContract.Presenter {
                 .sendMessage(conversationId, message)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread()).subscribe({
-                    mView.onSendMessageSuccess(message)
+
                 }, { t: Throwable ->
                     mView.onSendMessageError(t.message.toString())
                 })
@@ -26,20 +25,31 @@ class ConversationPresenter : ConversationContract.Presenter {
     }
 
     override fun getMessageList(conversationId: String) {
+        val onEmptyMessage = { mView.onEmptyMessageList() }
         val getMessageListDisposable =
             FirebaseDatabaseImp
-                .getMessageList(conversationId).flatMapSingle { list ->
-                    mView.onGetMessageListSuccess(list as ArrayList<Message>)
-                    FirebaseDatabaseImp.startListeningMessageListChange(conversationId)
-                }
+                .getMessage(conversationId, onEmptyMessage)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ message ->
-                    mView.onSendMessageSuccess(message)
+                    mView.onGetMessageSuccess(message)
                 }, { throwable ->
-                    mView.onSendMessageError(throwable.message.toString())
+                    mView.onGetMessageError(throwable.message.toString())
                 })
         mCompositeDisposable.add(getMessageListDisposable)
+    }
+
+    override fun isEmptyMessageList(conversationId: String) {
+        val disposable =
+            FirebaseDatabaseImp.isEmptyMessageList(conversationId)
+                .observeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ isEmpty ->
+                    if (isEmpty)
+                        mView.onEmptyMessageList()
+                }, {
+                })
+        mCompositeDisposable.add(disposable)
     }
 
     override fun setView(view: ConversationContract.View) {

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:backgroundTint="@color/colorPrimaryLight"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -8,24 +7,7 @@
     android:orientation="vertical"
     tools:context=".ui.conversation.ConversationActivity">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/conversationActivityToolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?android:attr/actionBarSize"
-            android:theme="@style/MyTheme"
-            app:layout_scrollFlags="scroll|snap|enterAlways"
-            app:popupTheme="@style/Widget.MaterialComponents.Toolbar"
-            app:subtitle="@string/sampleEmail"
-            app:subtitleTextColor="@color/colorWhite"
-            app:title="@string/sampleName"
-            app:titleMargin="0dp"
-            app:titleTextColor="@color/colorWhite" />
-
-    </com.google.android.material.appbar.AppBarLayout>
+    <include layout="@layout/main_tool_bar" />
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -54,7 +36,6 @@
         android:orientation="horizontal">
 
         <com.google.android.material.textfield.TextInputLayout
-            app:startIconTint="@color/colorPrimaryDark"
             android:id="@+id/conversationActivityMessageTextInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -62,6 +43,7 @@
             android:hint="@string/messageHint"
             android:orientation="horizontal"
             app:startIconDrawable="@drawable/ic_sentiment_satisfied_black_24dp"
+            app:startIconTint="@color/colorPrimaryDark"
             tools:targetApi="o">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -76,16 +58,15 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <ImageView
-            style="?android:attr/actionButtonStyle"
             android:id="@+id/conversationActivitySendMessageButton"
+            style="?android:attr/actionButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_gravity="end"
-            android:background="?android:attr/selectableItemBackground"
             android:padding="@dimen/baseMargin2"
-            android:src="@drawable/ic_send_black_24dp"
+            app:srcCompat="@drawable/ic_send_black_24dp"
             app:tint="@color/colorPrimary" />
 
     </RelativeLayout>

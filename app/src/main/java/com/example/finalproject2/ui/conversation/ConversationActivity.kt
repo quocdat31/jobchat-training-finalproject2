@@ -4,23 +4,28 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.finalproject2.R
 import com.example.finalproject2.firebase.authentication.FirebaseAuthImpl
+import com.example.finalproject2.firebase.database.FirebaseDatabaseImp
+import com.example.finalproject2.model.Contact
 import com.example.finalproject2.model.Message
 import com.example.finalproject2.model.User
-import com.example.finalproject2.ultis.clear
-import com.example.finalproject2.ultis.getString
-import com.example.finalproject2.ultis.gone
-import com.example.finalproject2.ultis.toast
+import com.example.finalproject2.ultis.extension.clear
+import com.example.finalproject2.ultis.extension.getString
+import com.example.finalproject2.ultis.extension.gone
+import com.example.finalproject2.ultis.extension.toast
+import com.example.finalproject2.ultis.listener.ItemClickListener
 import kotlinx.android.synthetic.main.activity_conversation.*
-import java.util.*
+import kotlinx.android.synthetic.main.main_tool_bar.*
 
 class ConversationActivity : AppCompatActivity(), ConversationContract.View,
-    OnRecyclerViewItemClickListener {
+    ItemClickListener<Message> {
 
     companion object {
         fun getInstance(context: Context): Intent {
@@ -29,34 +34,35 @@ class ConversationActivity : AppCompatActivity(), ConversationContract.View,
     }
 
     private val mPresenter: ConversationPresenter = ConversationPresenter()
-    lateinit var mConversationID: String
-    private val EXTRA_KEY = "user"
+    private lateinit var mConversationID: String
+    private val EXTRA_KEY = "contact"
     private val INPUT_EMPTY_ERROR = "Cannot send empty message"
     lateinit var mAdapter: ConversationRecyclerViewAdapter
     lateinit var mUser: User
+    private var mMessageList: ArrayList<Message> = arrayListOf()
+    private val VISIBLE = View.VISIBLE
+    private val GONE = View.GONE
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_conversation)
 
-        mUser = intent.getSerializableExtra(EXTRA_KEY) as User
-        initView(mUser)
+        mUser = intent.getSerializableExtra(EXTRA_KEY) as Contact
+        initView(mUser as Contact)
+        initConversationRecyclerView()
 
         conversationActivitySendMessageButton.setOnClickListener {
             if (conversationActivityMessageTextInput.getString() == "") {
                 onEmptyMessageInput()
             } else {
-
-
+                val conversationId = (mUser as Contact).conversationId.toString()
                 val message = Message().apply {
                     sender = FirebaseAuthImpl.getUserId()
                     receiver = mUser.id
                     text = conversationActivityMessageTextInput.getString()
                 }
-                mPresenter.sendMessage(mUser.id.toString(), message)
-
-
+                mPresenter.sendMessage(conversationId, message)
                 conversationActivityMessageTextInput.clear()
             }
         }
@@ -65,31 +71,15 @@ class ConversationActivity : AppCompatActivity(), ConversationContract.View,
     override fun onDestroy() {
         super.onDestroy()
         mPresenter.onStop()
+        FirebaseDatabaseImp.setMessageListener(null)
     }
 
-    override fun onSendMessageSuccess(message: Message) {
-        mAdapter.updateMessage(message)
-        conversationActivityRecyclerView.smoothScrollToPosition(mAdapter.itemCount - 1)
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.top_app_bar_menu, menu)
+        return true
     }
 
     override fun onSendMessageError(error: String) {
-        this.toast(error)
-    }
-
-    override fun onGetMessageListSuccess(messageList: ArrayList<Message>) {
-        mAdapter = ConversationRecyclerViewAdapter(messageList, this, this)
-        conversationActivityRecyclerView.apply {
-            adapter = mAdapter
-            layoutManager = LinearLayoutManager(this@ConversationActivity)
-            setHasFixedSize(true)
-            if (messageList.isNotEmpty()) {
-                smoothScrollToPosition(mAdapter.itemCount - 1)
-            }
-        }
-        conversationActivityProgressBar.gone()
-    }
-
-    override fun onGetMessageListError(error: String) {
         this.toast(error)
     }
 
@@ -101,7 +91,20 @@ class ConversationActivity : AppCompatActivity(), ConversationContract.View,
         this.toast(INPUT_EMPTY_ERROR)
     }
 
-    override fun onItemClick(message: Message) {
+    override fun onGetMessageSuccess(message: Message) {
+        mAdapter.updateMessage(message)
+        conversationActivityRecyclerView.smoothScrollToPosition(mAdapter.itemCount - 1)
+        if (conversationActivityProgressBar.visibility == VISIBLE)
+            conversationActivityProgressBar.gone()
+    }
+
+    override fun onGetMessageError(error: String) {
+        this.toast(error)
+    }
+
+    override fun onEmptyMessageList() {
+        if (conversationActivityProgressBar.visibility == VISIBLE)
+            conversationActivityProgressBar.gone()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -111,19 +114,52 @@ class ConversationActivity : AppCompatActivity(), ConversationContract.View,
         return super.onOptionsItemSelected(item)
     }
 
-    private fun configActionBar(user: User) {
-        setSupportActionBar(conversationActivityToolbar)
+    private fun configActionBar(contact: Contact) {
+        setSupportActionBar(mainToolBar)
         supportActionBar?.apply {
-            title = user.name
-            subtitle = user.email
+            title = contact.name
+            subtitle = contact.email
             setHomeButtonEnabled(true)
             setDisplayHomeAsUpEnabled(true)
         }
     }
 
-    private fun initView(user: User) {
-        mPresenter.getMessageList(user.id.toString())
+    private fun initView(contact: Contact) {
+        mPresenter.isEmptyMessageList(contact.conversationId.toString())
+        mPresenter.getMessageList(contact.conversationId.toString())
         mPresenter.setView(this)
-        configActionBar(user)
+        configActionBar(contact)
     }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun initConversationRecyclerView() {
+        mMessageList.add(Message())
+        mAdapter = ConversationRecyclerViewAdapter(mMessageList, this, this)
+
+        conversationActivityRecyclerView.apply {
+            adapter = mAdapter
+            layoutManager =
+                LinearLayoutManager(this@ConversationActivity)
+            if (!mUser.imageUri.equals("null")) {
+                mAdapter.getUser(mUser)
+            }
+            if (mAdapter.itemCount != 0) {
+                smoothScrollToPosition(mAdapter.itemCount - 1)
+            }
+        }
+    }
+
+    override fun onClick(model: Message) = Unit
+
+    override fun onLongClick(model: Message) = Unit
+
+//    private fun setUpUserDetail() {
+//        conversationActivityUserDetailCardView.userDetail.apply {
+//            friendEmailTextView.text = mUser.email
+//            friendNameTextView.text = mUser.name
+//        }
+//        Picasso.get()
+//            .load(mUser.imageUri)
+//            .into(conversationActivityUserDetailCardView.userDetail.friendAvatarImageView)
+//    }
 }

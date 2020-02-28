@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.appbar.AppBarLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/mainCollapsingAppBar"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:animateLayoutChanges="true"
+    android:theme="@style/MyToolBarTheme">
+
+    <com.google.android.material.appbar.CollapsingToolbarLayout
+        android:id="@+id/mainCollapsingToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:animateLayoutChanges="true"
+        android:fitsSystemWindows="true"
+        android:theme="@style/MyToolBarTheme"
+        app:collapsedTitleTextAppearance="@style/TextAppearance.AppCompat.Title"
+        app:contentScrim="@color/colorPrimary"
+        app:expandedTitleGravity="bottom"
+        app:expandedTitleMarginEnd="64dp"
+        app:expandedTitleMarginStart="48dp"
+        app:expandedTitleTextAppearance="@style/TextAppearance.Design.CollapsingToolbar.Expanded"
+        app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="128dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/img_background"
+            app:layout_collapseMode="pin" />
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/mainToolBarInsideCollapsingToolBar"
+            android:layout_width="match_parent"
+            android:layout_height="?android:attr/actionBarSize"
+            android:animateLayoutChanges="true"
+            android:theme="@style/MyToolBarTheme"
+            app:layout_collapseMode="pin"
+            app:layout_scrollFlags="scroll|enterAlways"
+            app:menu="@menu/top_app_bar_menu"
+            app:navigationIcon="@drawable/ic_menu_white_24dp"
+            app:subtitleTextColor="@color/colorWhite"
+            app:titleTextColor="@color/colorWhite" />
+
+    </com.google.android.material.appbar.CollapsingToolbarLayout>
+
+</com.google.android.material.appbar.AppBarLayout>

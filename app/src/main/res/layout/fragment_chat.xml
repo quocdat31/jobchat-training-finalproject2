@@ -1,35 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    android:id="@+id/contactFragment"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.main.main_tab_fragment.chat.ChatFragment">
 
-    <com.google.android.material.appbar.AppBarLayout
+    <ProgressBar
+        android:id="@+id/chatFragmentProgressBar"
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_marginBottom="56dp"
+        android:id="@+id/chatFragmentRecyclerView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <com.google.android.material.appbar.MaterialToolbar
-            android:theme="@style/MyTheme"
-            app:subtitle="@string/sampleEmail"
-            app:title="@string/sampleName"
-            android:id="@+id/chatFragmentToolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?android:attr/actionBarSize"
-            app:layout_scrollFlags="scroll|snap|enterAlways"
-            app:popupTheme="@style/Widget.MaterialComponents.Toolbar"
-            app:subtitleTextColor="@color/colorWhite"
-            app:titleMargin="0dp"
-            app:titleTextColor="@color/colorWhite" />
-
-    </com.google.android.material.appbar.AppBarLayout>
-
-
-    <TextView
-        android:gravity="center"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/navigationChatTab" />
+        android:layout_height="match_parent"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

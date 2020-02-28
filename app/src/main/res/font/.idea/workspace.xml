@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="dfd0a5e2-73cd-4fd7-a176-aa0ed7275a45" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/../../java/com/example/finalproject2/ui/conversation/ConversationActivity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../../java/com/example/finalproject2/ui/conversation/ConversationActivity.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../java/com/example/finalproject2/ui/main/MainActivity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../../java/com/example/finalproject2/ui/main/MainActivity.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../java/com/example/finalproject2/ui/main/main_tab_fragment/chat/ChatFragment.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../../java/com/example/finalproject2/ui/main/main_tab_fragment/chat/ChatFragment.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../java/com/example/finalproject2/ui/main/main_tab_fragment/contact/ContactFragment.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../../java/com/example/finalproject2/ui/main/main_tab_fragment/contact/ContactFragment.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../java/com/example/finalproject2/ui/main/main_tab_fragment/personal/PersonalFragment.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../../java/com/example/finalproject2/ui/main/main_tab_fragment/personal/PersonalFragment.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../layout/activity_home.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../layout/activity_home.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../layout/activity_signin.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../layout/activity_signin.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../layout/slide_item.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../layout/slide_item.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../layout/slide_item_2.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../layout/slide_item_2.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../layout/slide_item_3.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../layout/slide_item_3.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../menu/bottom_navigation.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../menu/bottom_navigation.xml" afterDir="false" />
+    </list>
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../../../../.." />
+  </component>
+  <component name="ProjectId" id="1YcJ2P56dl0G6mPtBkQ06Zr80wW" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="PropertiesComponent">
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="dfd0a5e2-73cd-4fd7-a176-aa0ed7275a45" name="Default Changelist" comment="" />
+      <created>1583235741308</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1583235741308</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>

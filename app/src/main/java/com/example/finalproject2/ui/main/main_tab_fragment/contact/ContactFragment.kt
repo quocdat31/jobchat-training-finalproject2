@@ -8,16 +8,38 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.finalproject2.R
+import com.example.finalproject2.model.Contact
 import com.example.finalproject2.model.User
-import com.example.finalproject2.ultis.*
+import com.example.finalproject2.ui.main.MainInteractionListener
+import com.example.finalproject2.ui.main.main_tab_fragment.contact.adapter.ContactFirebaseAdapter
+import com.example.finalproject2.ultis.extension.gone
+import com.example.finalproject2.ultis.extension.toast
+import com.example.finalproject2.ultis.extension.visible
+import com.example.finalproject2.ultis.listener.AdapterListener
+import com.example.finalproject2.ultis.listener.ItemClickListener
 import kotlinx.android.synthetic.main.fragment_contact.*
 
-class ContactFragment : Fragment(), ContactContract.View, OnRecyclerViewItemClickListener {
+class ContactFragment : Fragment(),
+    ContactContract.View,
+    ItemClickListener<Contact>,
+    MainInteractionListener.ContactListener,
+    AdapterListener {
 
     private val mPresenter by lazy { ContactPresenter() }
     private var mListener: OnFragmentInteractionListener? = null
     private var mNavigator: ContactNavigator? = null
     lateinit var mContext: Context
+    lateinit var mAdapter: ContactFirebaseAdapter
+
+    override fun onStart() {
+        super.onStart()
+        mAdapter.startListening()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        mAdapter.stopListening()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -32,10 +54,7 @@ class ContactFragment : Fragment(), ContactContract.View, OnRecyclerViewItemClic
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         init()
-        addTextChangeListener()
-        addFriendButton.setOnClickListener {
-            onAddFriendButtonClick()
-        }
+        initRecyclerView()
     }
 
     override fun onDestroy() {
@@ -43,42 +62,12 @@ class ContactFragment : Fragment(), ContactContract.View, OnRecyclerViewItemClic
         mPresenter.onStop()
     }
 
-    override fun onAddFriendButtonClick() {
-        setVisibilityWhenAddingFriend(true)
-        mPresenter.addFriend()
-    }
-
-    override fun onAddFriendSuccess() {
-        setVisibilityWhenAddingFriend(false)
-        activity?.applicationContext?.toast(getString(R.string.onSuccess))
-        searchFriendEditText.text?.clear()
-    }
-
-    override fun onAddFriendError(exception: String?) {
-        setVisibilityWhenAddingFriend(false)
-        activity?.applicationContext?.toast("$exception")
-    }
-
-    override fun onGetContactSuccess(friendList: ArrayList<User>) {
+    override fun onGetContactSuccess(contact: ArrayList<Contact>) {
         loadingContactListProgressBar.gone()
-        contactRecyclerView.apply {
-            setHasFixedSize(true)
-            layoutManager = LinearLayoutManager(activity)
-            adapter = ContactRecyclerViewAdapter(
-                friendList,
-                activity?.applicationContext, this@ContactFragment
-            )
-            visible()
-        }
     }
 
     override fun onGetContactError(error: String) {
         activity?.applicationContext?.toast(error)
-    }
-
-    override fun onItemClick(user: User) {
-        mPresenter.accessConversation(user)
-        mListener?.onFragmentInteraction(user)
     }
 
     interface OnFragmentInteractionListener {
@@ -101,28 +90,37 @@ class ContactFragment : Fragment(), ContactContract.View, OnRecyclerViewItemClic
 
     private fun init() {
         loadingContactListProgressBar.visible()
+        mPresenter.onStart()
         mPresenter.setView(this)
-        mPresenter.getContactList(mPresenter.getCurrentUserId())
     }
 
-    private fun setVisibilityWhenAddingFriend(isProcessing: Boolean) {
-        if (isProcessing) {
-            addingFriendProgressBar.visible()
-            addFriendButton.gone()
-        } else {
-            addingFriendProgressBar.gone()
-            addFriendButton.visible()
+    private fun initRecyclerView() {
+        mAdapter = ContactFirebaseAdapter()
+        mAdapter.setAdapterListener(this)
+        mAdapter.setItemClickListener(this)
+        contactRecyclerView.apply {
+            setHasFixedSize(true)
+            layoutManager = LinearLayoutManager(activity)
+            adapter = mAdapter
         }
     }
 
-    private fun addTextChangeListener() {
-        searchFriendEditText.onTextChanged { email ->
-            addFriendButton.isEnabled = email != mPresenter.getCurrentUserEmail()
-            if (!ValidationCheck.isEmailValid(email)) {
-                searchFriendEditText.setError(getString(R.string.emailInputError), null)
-                addFriendButton.disable()
-            }
-            mPresenter.onSearchInputChange(email)
-        }
+    override fun onAddFriendSuccess(friendEmail: String) {
+
+    }
+
+    override fun onClick(model: Contact) {
+        mListener?.onFragmentInteraction(model)
+    }
+
+    override fun onLongClick(model: Contact) = Unit
+
+    override fun onDataChange() {
+        loadingContactListProgressBar.gone()
+    }
+
+    override fun onError(error: String) {
+        loadingContactListProgressBar.gone()
+        mContext.toast(error)
     }
 }

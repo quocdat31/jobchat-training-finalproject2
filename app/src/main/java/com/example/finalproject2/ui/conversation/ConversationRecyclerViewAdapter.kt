@@ -1,71 +1,3 @@
-//package com.example.finalproject2.ui.conversation
-//
-//import android.content.Context
-//import android.view.LayoutInflater
-//import android.view.View
-//import android.view.ViewGroup
-//import android.widget.TextView
-//import androidx.recyclerview.widget.RecyclerView
-//import com.example.finalproject2.R
-//import com.example.finalproject2.model.Message
-//import com.example.finalproject2.ultis.gone
-//import com.example.finalproject2.ultis.visible
-//import kotlinx.android.synthetic.main.received_message_item.view.*
-//
-//interface OnRecyclerViewItemClickListener {
-//    fun onItemClick(message: Message)
-//}
-//
-//class ConversationRecyclerViewAdapter(
-//    private val items: ArrayList<Message>,
-//    private val context: Context?,
-//    private val onRecyclerViewItemClickListener: OnRecyclerViewItemClickListener
-//) :
-//    RecyclerView.Adapter<ConversationRecyclerViewAdapter.ViewHolder>() {
-//
-//    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-//        val messageContent: TextView = itemView.receivedMessageItemContentTextView
-//        val messageDate: TextView = itemView.receivedMessageItemDateTextView
-//        fun bind(
-//            message: Message,
-//            onRecyclerViewItemClickListener: OnRecyclerViewItemClickListener
-//        ) {
-//            itemView.setOnClickListener {
-//                if (messageDate.visibility == View.GONE)
-//                    messageDate.visible()
-//                else
-//                    messageDate.gone()
-//                onRecyclerViewItemClickListener.onItemClick(message)
-//            }
-//        }
-//    }
-//
-//    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-//        return ViewHolder(
-//            LayoutInflater.from(context).inflate(
-//                R.layout.received_message_item,
-//                parent,
-//                false
-//            )
-//        )
-//    }
-//
-//    override fun getItemCount(): Int {
-//        return items.size
-//    }
-//
-//    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-//        holder.apply {
-//            messageContent.text = items[position].text
-//            messageDate.text = items[position].time
-//        }
-//
-//        val message = items[position]
-//
-//        holder.bind(message, onRecyclerViewItemClickListener)
-//    }
-//}
-
 package com.example.finalproject2.ui.conversation
 
 import android.content.Context
@@ -77,26 +9,30 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.finalproject2.R
 import com.example.finalproject2.model.Message
-import com.example.finalproject2.ultis.gone
-import com.example.finalproject2.ultis.visible
+import com.example.finalproject2.model.User
+import com.example.finalproject2.ultis.extension.gone
+import com.example.finalproject2.ultis.extension.visible
+import com.example.finalproject2.ultis.listener.ItemClickListener
 import com.google.firebase.auth.FirebaseAuth
+import com.squareup.picasso.Picasso
+import kotlinx.android.synthetic.main.contact_friend_item.view.*
 import kotlinx.android.synthetic.main.received_message_item.view.*
 import kotlinx.android.synthetic.main.sent_message_item.view.*
-
-interface OnRecyclerViewItemClickListener {
-    fun onItemClick(message: Message)
-}
+import kotlinx.android.synthetic.main.user_detail_cardview.view.*
 
 class ConversationRecyclerViewAdapter(
     private val items: ArrayList<Message>,
     private val context: Context?,
-    private val onRecyclerViewItemClickListener: OnRecyclerViewItemClickListener
+    private val itemClickListener: ItemClickListener<Message>
 ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+    lateinit var mUser: User
 
     companion object {
         const val SENT_MESSAGE_VIEW_TYPE = 0
         const val RECEIVED_MESSAGE_VIEW_TYPE = 1
+        const val HEADER_VIEW_TYPE = 2
     }
 
     class ReceivedMessageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -105,14 +41,14 @@ class ConversationRecyclerViewAdapter(
         val messageAvatar: ImageView = itemView.receivedMessageItemAvatarImageView
         fun bind(
             message: Message,
-            onRecyclerViewItemClickListener: OnRecyclerViewItemClickListener
+            itemClickListener: ItemClickListener<Message>
         ) {
             itemView.setOnClickListener {
                 if (messageDate.visibility == View.GONE)
                     messageDate.visible()
                 else
                     messageDate.gone()
-                onRecyclerViewItemClickListener.onItemClick(message)
+                itemClickListener.onClick(message)
             }
         }
     }
@@ -122,34 +58,47 @@ class ConversationRecyclerViewAdapter(
         val messageDate: TextView = itemView.sentMessageITemDateTextView
         fun bind(
             message: Message,
-            onRecyclerViewItemClickListener: OnRecyclerViewItemClickListener
+            itemClickListener: ItemClickListener<Message>
         ) {
             itemView.setOnClickListener {
                 if (messageDate.visibility == View.GONE)
                     messageDate.visible()
                 else
                     messageDate.gone()
-                onRecyclerViewItemClickListener.onItemClick(message)
+                itemClickListener.onClick(message)
             }
         }
     }
 
+    class HeaderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val username: TextView = itemView.userDetail.friendNameTextView
+        val userEmail: TextView = itemView.userDetail.friendEmailTextView
+        val userAvatar: ImageView = itemView.userDetail.friendAvatarImageView
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return if (viewType == SENT_MESSAGE_VIEW_TYPE) {
-            SentMessageViewHolder(
-                LayoutInflater.from(context).inflate(
-                    R.layout.sent_message_item,
-                    parent,
-                    false
+        return when (viewType) {
+            SENT_MESSAGE_VIEW_TYPE -> {
+                SentMessageViewHolder(
+                    LayoutInflater
+                        .from(context)
+                        .inflate(R.layout.sent_message_item, parent, false)
                 )
+            }
+            HEADER_VIEW_TYPE -> {
+                HeaderViewHolder(
+                    LayoutInflater
+                        .from(context)
+                        .inflate(R.layout.user_detail_cardview, parent, false)
+                )
+
+            }
+            else -> ReceivedMessageViewHolder(
+                LayoutInflater
+                    .from(context)
+                    .inflate(R.layout.received_message_item, parent, false)
             )
-        } else ReceivedMessageViewHolder(
-            LayoutInflater.from(context).inflate(
-                R.layout.received_message_item,
-                parent,
-                false
-            )
-        )
+        }
     }
 
     override fun getItemCount(): Int {
@@ -157,7 +106,11 @@ class ConversationRecyclerViewAdapter(
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if (items[position].sender == FirebaseAuth.getInstance().currentUser?.uid) SENT_MESSAGE_VIEW_TYPE else RECEIVED_MESSAGE_VIEW_TYPE
+        return when {
+            items[position].sender == FirebaseAuth.getInstance().currentUser?.uid -> SENT_MESSAGE_VIEW_TYPE
+            position == 0 -> HEADER_VIEW_TYPE
+            else -> RECEIVED_MESSAGE_VIEW_TYPE
+        }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
@@ -165,22 +118,39 @@ class ConversationRecyclerViewAdapter(
             holder.apply {
                 messageContent.text = items[position].text
                 messageDate.text = items[position].time
-                bind(items[position], onRecyclerViewItemClickListener)
+                bind(items[position], itemClickListener)
             }
         }
         if (holder is ReceivedMessageViewHolder) {
+            Picasso.get()
+                .load(mUser.imageUri)
+                .into(holder.messageAvatar)
             holder.apply {
                 //if (items[position].time - items[position+1].time <= 60)
                 //TODO: hide avatar if messages receive distance time <= 60s
                 messageContent.text = items[position].text
                 messageDate.text = items[position].time
-                bind(items[position], onRecyclerViewItemClickListener)
+                bind(items[position], itemClickListener)
+            }
+        }
+        if (holder is HeaderViewHolder) {
+            Picasso.get()
+                .load(mUser.imageUri)
+                .into(holder.userAvatar)
+            holder.apply {
+                userEmail.text = mUser.email
+                username.text = mUser.name
             }
         }
     }
 
     fun updateMessage(message: Message) {
         items.add(message)
-        notifyDataSetChanged()
+        notifyItemInserted(items.size)
     }
+
+    fun getUser(user: User) {
+        this.mUser = user
+    }
+
 }

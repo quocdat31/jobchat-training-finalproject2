@@ -1,29 +1,51 @@
 package com.example.finalproject2.firebase.authentication
 
-import com.google.android.gms.tasks.Task
-import com.google.firebase.auth.AuthResult
+import android.net.Uri
+import android.os.Build
+import androidx.annotation.RequiresApi
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.UserProfileChangeRequest
+import com.google.firebase.database.FirebaseDatabase
 import io.reactivex.Completable
+import io.reactivex.Single
+import org.threeten.bp.LocalDateTime
+import org.threeten.bp.format.DateTimeFormatter
 
 object FirebaseAuthImpl : FirebaseAuthInterface {
+
     private val mFirebaseAuth = FirebaseAuth.getInstance()
+    private val formatter = DateTimeFormatter.ofPattern("MM-dd HH:mm")
+
+    private fun setConnectivityState(connectivityState: String) {
+        FirebaseDatabase
+            .getInstance()
+            .reference
+            .child("users")
+            .child(getUserId())
+            .child("connectivityState")
+            .setValue(connectivityState)
+    }
+
     override fun signUp(
         email: String,
         password: String,
-        username: String
-    ): Completable {
-        return Completable.create { emitter ->
+        username: String,
+        imageUri: Uri
+    ): Single<String> {
+        return Single.create { emitter ->
             mFirebaseAuth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener { task: Task<AuthResult> ->
-                    if (task.isComplete && task.isSuccessful) {
+                .addOnCompleteListener { createUserTask ->
+                    if (createUserTask.isComplete && createUserTask.isSuccessful) {
                         mFirebaseAuth.currentUser?.updateProfile(
                             UserProfileChangeRequest
                                 .Builder()
                                 .setDisplayName(username)
+                                .setPhotoUri(imageUri)
                                 .build()
-                        )
-                        emitter.onComplete()
+                        )?.addOnCompleteListener { updateProfileTask ->
+                            if (updateProfileTask.isComplete && updateProfileTask.isSuccessful)
+                                emitter.onSuccess(getUserId())
+                        }
                     }
                 }
                 .addOnFailureListener { exception ->
@@ -33,12 +55,13 @@ object FirebaseAuthImpl : FirebaseAuthInterface {
     }
 
     override fun getUserId(): String = mFirebaseAuth.currentUser?.uid.toString()
-
     override fun getUsername(): String = mFirebaseAuth.currentUser?.displayName.toString()
-
     override fun getUserEmail(): String = mFirebaseAuth.currentUser?.email.toString()
+    override fun getUserImageUri(): String = mFirebaseAuth.currentUser?.photoUrl.toString()
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun logout() {
+        setConnectivityState("Last seen ${LocalDateTime.now().format(formatter)}")
         mFirebaseAuth.signOut()
     }
 
@@ -51,6 +74,7 @@ object FirebaseAuthImpl : FirebaseAuthInterface {
                 .addOnCompleteListener { task ->
                     if (task.isComplete && task.isSuccessful) {
                         emitter.onComplete()
+                        setConnectivityState("Online")
                     }
                 }
                 .addOnFailureListener { exception ->
@@ -58,4 +82,5 @@ object FirebaseAuthImpl : FirebaseAuthInterface {
                 }
         }
     }
+
 }

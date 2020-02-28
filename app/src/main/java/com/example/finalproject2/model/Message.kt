@@ -1,12 +1,9 @@
 package com.example.finalproject2.model
 
-import android.os.Build
-import androidx.annotation.RequiresApi
-import com.example.finalproject2.ultis.getTimeString
-import java.time.LocalDateTime
+import org.threeten.bp.LocalDateTime
+import org.threeten.bp.format.DateTimeFormatter
 
-@RequiresApi(Build.VERSION_CODES.O)
-data class Message(
+open class Message(
     var id: String? = null,
     var text: String? = null,
     var sender: String? = null,
@@ -14,6 +11,8 @@ data class Message(
     var time: String? = null
 ) {
     init {
-        time = LocalDateTime.now().getTimeString()
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+        time = LocalDateTime.now()
+            .format(formatter)
     }
 }

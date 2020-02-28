@@ -5,5 +5,7 @@ import java.io.Serializable
 open class User(
     var id: String? = null,
     var name: String? = null,
-    var email: String? = null
-): Serializable
+    var email: String? = null,
+    var imageUri: String? = null,
+    var connectivityState: String? = null
+) : Serializable

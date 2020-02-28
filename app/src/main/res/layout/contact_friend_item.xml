@@ -1,50 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout
+    android:paddingHorizontal="@dimen/baseMargin2"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/friendItemRootLayout"
     android:layout_width="match_parent"
+    android:layout_height="@dimen/contactItemHeight"
+    android:background="?android:attr/selectableItemBackground"
     android:clickable="true"
     android:focusable="true"
-    android:id="@+id/friendItemRootLayout"
-    android:layout_height="wrap_content"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:background="?android:attr/selectableItemBackground"
-    android:padding="@dimen/baseMargin"
     tools:targetApi="o">
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:layout_gravity="center"
-            android:id="@+id/friendAvatarImageView"
-            android:layout_width="@dimen/contactImageViewDimension"
-            android:layout_height="@dimen/contactImageViewDimension"
-            android:background="@drawable/circle_shape"
-            android:padding="@dimen/baseMargin"
-            android:src="@drawable/ic_person_black_24dp"
-            android:tint="@color/colorWhite" />
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/friendAvatarImageView"
+        android:layout_width="@dimen/contactItemImageViewDimension"
+        android:layout_height="@dimen/contactItemImageViewDimension"
+        android:layout_gravity="center"
+        android:background="@drawable/circle_shape"
+        android:tint="@color/colorWhite" />
 
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:gravity="center_vertical"
-            android:layout_gravity="center"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:paddingHorizontal="@dimen/baseMargin"
-            tools:targetApi="o">
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:layout_marginStart="@dimen/baseMargin2"
+        android:layout_marginLeft="@dimen/baseMargin2"
+        android:layout_weight="1"
+        android:gravity="center_vertical"
+        android:orientation="vertical"
+        tools:targetApi="o">
 
-            <TextView
-                style="@style/TextAppearance.MaterialComponents.Body1"
-                android:id="@+id/friendNameTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/sampleName" />
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/friendNameTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/roboto_medium"
+            android:textSize="18sp" />
 
-            <TextView
-                style="@style/TextAppearance.MaterialComponents.Body2"
-                android:id="@+id/friendEmailTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/sampleEmail" />
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/friendEmailTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/roboto_regular"
+            android:textSize="14sp" />
 
-        </LinearLayout>
+    </LinearLayout>
 
 </LinearLayout>
 

@@ -2,6 +2,7 @@ package com.example.finalproject2.ui.main.main_tab_fragment.contact
 
 import com.example.finalproject2.firebase.authentication.FirebaseAuthImpl
 import com.example.finalproject2.firebase.database.FirebaseDatabaseImp
+import com.example.finalproject2.model.Contact
 import com.example.finalproject2.model.User
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -14,24 +15,10 @@ class ContactPresenter :
     private var mFriend = User()
     private var mCompositeDisposable = CompositeDisposable()
 
-    override fun onStart() = Unit
+    override fun onStart() = getContactList(FirebaseAuthImpl.getUserId())
 
-    override fun onStop() = mCompositeDisposable.clear()
-
-    override fun addFriend() {
-        val friendEmail = mFriend.email.toString()
-        val disposable =
-            FirebaseDatabaseImp
-                .addFriend(friendEmail)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
-                    mView.onAddFriendSuccess()
-                }, { t: Throwable? ->
-                    val error = t?.message.toString()
-                    mView.onAddFriendError(error)
-                })
-        mCompositeDisposable.add(disposable)
+    override fun onStop() {
+        mCompositeDisposable.clear()
     }
 
     override fun onSearchInputChange(email: String) {
@@ -49,28 +36,14 @@ class ContactPresenter :
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ t: List<User>? ->
-                    mView.onGetContactSuccess(t as ArrayList<User>)
+                    mView.onGetContactSuccess(t as ArrayList<Contact>)
                 }, { t: Throwable? ->
-                    mView.onAddFriendError(t?.message.toString())
+                    mView.onGetContactError(t?.message.toString())
                 })
         mCompositeDisposable.add(disposable)
     }
 
     override fun setView(view: ContactContract.View) {
         this.mView = view
-    }
-
-    fun accessConversation(user: User) {
-        val disposable =
-            FirebaseDatabaseImp
-                .accessConversation(user)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
-
-                }, {
-
-                })
-        mCompositeDisposable.add(disposable)
     }
 }
